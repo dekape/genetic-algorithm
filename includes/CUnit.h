@@ -1,9 +1,11 @@
 class CUnit {
  public:
   //index of the unit to which this unit’s concentrate stream is connected 
-  int conc_num;
+  int conc_num; //remove = 1
   //index of the unit to which this unit’s concentrate stream is connected 
   int tails_num;
+
+  int id;
   //A Boolean that is changed to true if the unit has been seen 
   bool mark;
 
