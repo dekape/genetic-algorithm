@@ -4,4 +4,4 @@ bool checkValidity(int *circuit, int no_units, CUnit *units);
 
 void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit);
 
-const int num_units = 10;
+const int num_units = 3;
