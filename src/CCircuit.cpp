@@ -7,12 +7,14 @@
 //std::vector<CUnit> units(num_units);
 int no_units = 2;
 
-void unitsToIntArray(int *IntArray, CUnit &units_to_convert)
+void unitsToIntArray(int *IntArray, CUnit *units_to_convert)
 {
   //IntArray is where to store answer
   IntArray[0] = 0;
-
-  
+  for(int i = 1; i < no_units; i++)
+  {
+    IntArray[i] = units_to_convert[i].conc_num;
+  }
 
 }
 
