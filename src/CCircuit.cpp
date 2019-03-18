@@ -37,3 +37,44 @@ void mark_units(int unit_num) {
 }
 
 
+double assess_fitness(double gormanium_mass, double waste_mass) {
+  /* Return a fitness value given the masses of the ouputs from a circuit.
+
+
+  Notes
+  -----
+  The weights used here as the rewards and costs
+  prescribed in the documentation provided by stephen.
+
+
+  Parameters
+  ----------
+  double gormanium_mass: value between 0 and 10
+    Mass of pure product from circuit
+
+  double waste_mass: value between 0 and 100
+    Mass of waste from circuit
+
+
+  Returns
+  -------
+  double fitness_score: 
+    Score calculate by weighted sum of gormanium and
+    waste masses
+  */
+
+
+  // Weights for gormanium and waste
+  double gormanium_reward = 100;
+  double waste_cost = 500;
+  
+
+  // Calculate weighted fitness value based on masses
+  double fitness_score = (gormanium_mass * gormanium_reward)
+                       - (waste_mass * waste_cost);
+
+  
+  return fitness_score;
+
+
+}
