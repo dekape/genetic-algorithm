@@ -23,102 +23,69 @@ using namespace std;
 
 int main(int argc, char * argv[])
 {
-	// Generate random valid circuits
+	// Allocate memory and initialise parents and offsprings grid
 	parents = new CCircuit[no_circuits];
-	for (int i = 0; i < no_circuits; i++) parents[i].initialise(no_units);
-	generateCircuits(no_units, no_circuits, parents);
+	offsprings = new CCircuit[no_circuits];
 	for (int i = 0; i < no_circuits; i++)
 	{
-		for (int j = 0; j < 2 * no_units + 1; j++)
-		{
-			cout << parents[i].circuit_ints[j] << " ";
-		}
-		cout << endl;
+		parents[i].initialise(no_units);
+		offsprings[i].initialise(no_units);
 	}
+	
+	// Generate random valid circuits, store in parents
+	generateCircuits(no_units, no_circuits, parents);
+	cout << "PARENTS" << endl;
+	for (int i = 0; i < no_circuits; i++)
+		parents[i].printCircuit();
 
 	bool terminate = false;
+	fitness = new double[no_circuits];
 	while (!terminate)
 	{	
-
 		// Calculate fitness of all circuits
+		//computeFitness(parents, fitness, no_circuits);
+		for (int i = 0; i < no_circuits; i++)
+			fitness[i] = rand() % 150;
 
 
-		// Store highest fitness as offspring
-
+		//// Store highest fitness as offspring
+		selectBestCircuit(parents, fitness, best_circuit, no_circuits, no_units);
+		offsprings[0] = best_circuit;
+		offspring_count++;
 
 		// While number of offsprings is less than number of parents
-			// Select two random parents
-
-
-			// Create offsprings from two parents (with mutation and crossover) -- check if valid
-
+		//while (offspring_count < no_circuits)
+		//{
+		// Create offsprings from two random parents (with mutation and crossover) -- check if valid
+		createOffsprings(parents, offsprings, no_units, no_circuits, p_mutation, fitness);
 		
-			// Store offsprings in offsprings grid
+		cout << "OFFSPRINGS" << endl;
+		for (int i = 0; i < no_circuits; i++)
+		{
+			offsprings[i].printCircuit();
+		}
+
+		//
+		//	// Store offsprings in offsprings grid, check if not overflowing
+		//	offspring_count += 2;
+		//}
 
 	
 		// Swap offsprings with parents
 
 		
-		// Update iteration, check for termination
+		// Update iteration
 		iter_count++;
 		cout << "Iteration: " << iter_count << endl;
+
+		// Evaluate termination
 		terminate = true;
 	}
 
 
 
-
 	// Delete dynamically allocated memory
-	//delete[] parents;
-	//delete[] offsprings;
-	//delete[] fitness;
-	//delete[] best_circuit;
-
-	system("pause");
-	return 0;
-}
-
-int main2(int argc, char * argv[])
-{
-	//// Allocate memory to parents and offspring
-	//parents = new CUnit*[no_circuits];
-	//offsprings = new CUnit*[no_circuits];
-	//for (int i = 0; i < no_circuits; i++)
-	//{
-	//	parents[i] = new CUnit[no_units];
-	//	offsprings[i] = new CUnit[no_units];
-	//}
-
-	//// Generate random circuits with CUnit objects. Feeder is always the 0th unit
-	//int ** temp_parents = new int*[no_circuits];
-	//for (int i = 0; i < no_circuits; i++)
-	//	temp_parents[i] = new int[2 * no_units + 1];
-	//generateCircuits(no_units, no_circuits, temp_parents);
-	//for (int i = 0; i < no_circuits; i++)
-	//	intArrayToUnits(temp_parents[i], parents[i], no_units);
-
-
-	//for (int i = 0; i < no_circuits; i++)
-	//{
-	//	//cout << i <<"- 0 ";
-	//	for (int j = 0; j < no_units; j++)
-	//		cout << parents[i][j].tails_num << " " << parents[i][j].conc_num << " ";
-	//	cout << endl;
-	//}
-
-
-	// Compute fitness of each circuit
-	//fitness = new double[no_circuits];
-	//computeFitness(parents, fitness, no_circuits);
-
-	//// Get the best circuit
-	//best_circuit = new CUnit[no_units];
-	//selectBestCircuit(parents, fitness, best_circuit, no_circuits, no_units);
-
-	// Delete dynamically allocated memory
-	//for (int i = 0; i < no_circuits; i++) delete[] parents[i];
-	//for (int i = 0; i < no_circuits; i++) delete[] offsprings[i];
-	//delete[] parents;
+	delete[] parents;
 	//delete[] offsprings;
 	//delete[] fitness;
 	//delete[] best_circuit;
