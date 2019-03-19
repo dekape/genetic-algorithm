@@ -1,32 +1,29 @@
-class CUnit {
+#ifndef CUNIT_H
+#define CUNIT_H
+
+#include "CStream.h"
+
+class CUnit
+{
 public:
-    //index of the unit to which this unit’s concentrate stream is connected
-    int conc_num; //remove = 1
-    //index of the unit to which this unit’s concentrate stream is connected
-    int tails_num;
+	CUnit();
+	~CUnit();
 
-    int id;
-    //A Boolean that is changed to true if the unit has been seen
-    bool mark;
+	CUnit(int id, int conc_num, int tails_num);
 
-    /*
+	//index of the unit to which this unit�s concentrate stream is connected 
+	int conc_num = -1;
+	//index of the unit to which this unit�s concentrate stream is connected 
+	int tails_num = -1;
+	//A Boolean that is changed to true if the unit has been seen 
+	bool mark = false;
 
-    ...other member functions and variables of CUnit
+	// Unit id number
+	int id = -1;
 
-    */
-    
-    CUnit(){
-        conc_num = -1;
-        tails_num = -1;
-        id = -1;
-        mark = false;
-    }
-    
-    CUnit(int curr_id, int conc, int tail){
-        id = curr_id;
-        conc_num = conc;
-        tails_num = tail;
-        mark = false;
-    }
+	// Streams for the total input (old and new)
+	// and the two outputs (concentrate and tail)
+	CStream curr_in_feed, old_in_feed,
+		conc_out, tail_out;
 };
-
+#endif // !CUNIT_H
