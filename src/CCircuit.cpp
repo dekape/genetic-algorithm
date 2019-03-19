@@ -2,16 +2,6 @@
 
 using namespace std;
 
-//std::vector<CUnit> units(num_units);
-void intArrayToUnits(int *int_array, CUnit *circuit, int no_units)
-{
-    for(int i=1;i<no_units*2 + 1;i+=2){
-        circuit[i/2].conc_num = int_array[i];
-        circuit[i/2].tails_num = int_array[i + 1];
-    }
-}
-
-
 void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int num_units) {
 
 	//if marked, dont bother
@@ -109,14 +99,6 @@ bool checkValidity(int *int_array, CUnit *circuit, int no_units)
 	return true;
 }
 
-
-void resetMarks(CUnit *units, int no_units)
-{
-	for (int i = 0; i < no_units; i++)
-	{
-		units[i].mark = false;
-	}
-
 double assessFitness(double gormanium_mass, double waste_mass) {
   /* Return a fitness value given the masses of the ouputs from a circuit.
 
@@ -162,7 +144,7 @@ bool allUnitsMarked(vector<CUnit> &circuit) {
   bool all_marked = true;
 
 
-  for (int i = 0; i < circuit.size(); i++) {
+  for (int i = 0; i < (int)circuit.size(); i++) {
     if (!circuit[i].mark) {
       all_marked = false;
     }

@@ -7,8 +7,6 @@
 
 using namespace std;
 
-void markUnits(int unit_num);
-
 double assessFitness(double gormanium_mass, double waste_mass);
 
 bool allUnitsMarked(vector<CUnit> &circuit);
