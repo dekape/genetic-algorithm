@@ -1,41 +1,102 @@
-#include <vector>
-#include <stdio.h>
-#include <CUnit.h>
-#include <CCircuit.h>
-
+#include "CCircuit.h"
 
 using namespace std;
-vector<CUnit> units(num_units);
 
+void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int num_units) {
 
-bool Check_Validity(int *circuit_vector)
+	//if marked, dont bother
+	if (units[unit_num].mark) return;
+	printf("\nLooking at unit %d", unit_num);
+	//mark it as visited
+	units[unit_num].mark = true;
+
+	//If we have seen this unit already exit
+	//Mark that we have now seen the unit
+	//If conc_num does not point at a circuit outlet recursively call the function
+
+	//if its next unit is not an exit, mark it
+	if (units[unit_num].conc_num < num_units) {
+		markUnits(units[unit_num].conc_num, units, conc_exit, tail_exit, num_units); //go to 
+	}
+	else {
+		printf("\nFound an exit");
+		conc_exit = true;
+		// ...Potentially do something to indicate that you have seen an exit
+	}
+	//If tails_num does not point at a circuit outlet recursively call the function 
+
+	//if its next unit is not an exit, mark it
+	if (units[unit_num].tails_num < num_units) {
+		markUnits(units[unit_num].tails_num, units, conc_exit, tail_exit, num_units);
+	}
+	else {
+		printf("\nFound an exit");
+
+		tail_exit = true;
+		// ...Potentially do something to indicate that you have seen an exit
+	}
+}
+
+void resetMarks(CUnit *units, int no_units)
 {
-  return true;
+  for(int i = 0; i < no_units; i++)
+  {
+    units[i].mark = false;
+  }
 }
 
 
-void mark_units(int unit_num) {
+bool checkValidity(int *int_array, CUnit *circuit, int no_units)
+{
+	bool conc_exit(false), tail_exit(false);
 
-  if (units[unit_num].mark) return;
+	markUnits(int_array[0], circuit, conc_exit, tail_exit, no_units); //units[0].id
+	//if not traversed to exit
+	if (!conc_exit && !tail_exit)
+	{
+		printf("\nOne or both exit not found");
+		return false;
+	}
+	//check traverse every one
+	for (int i = 0; i < no_units; i++)
+	{
+		if (!circuit[i].mark)
+		{
+			printf("\nNot every unit traversed");
+			return false;
+		}
+	}
+	printf("\n Conc? %d \n Tail? %d", (int)conc_exit, (int)tail_exit);
+	for (int i = 1; i < 2 * no_units + 1; i += 2)
+	{
+		//reset flags
+		if (int_array[i] == i / 2 || int_array[i + 1] == i / 2)
+			//if(units[j].conc_num == i || units[j].tails_num == i)
+		{
+			printf("\nOutput goes to itself");
+			return false;
+		}
+		//do mark units
+		//if exits go to same place
+		if (int_array[i] == int_array[i + 1])
+			//if(units[j].conc_num == units[j].tails_num)
+		{
+			printf("\nBoth outputs go to same place");
+			return false;
+		}
+		printf("\nChecking we can find both exits from unit %d", i / 2);
+		conc_exit = false; tail_exit = false; resetMarks(circuit, no_units);
+		markUnits(i / 2, circuit, conc_exit, tail_exit, no_units);
+		if (!conc_exit || !tail_exit)
+		{
+			printf("\nCan't find an exit from unit %d", i / 2);
+			return false;
+		}
+		//if conc goes to itself, tails goes to itself
 
-  units[unit_num].mark = true;
-
-  //If we have seen this unit already exit
-  //Mark that we have now seen the unit
-  //If conc_num does not point at a circuit outlet recursively call the function
-
-  if (units[unit_num].conc_num<num_units) {
-    mark_units(units[unit_num].conc_num);
-  } else {
-    // ...Potentially do something to indicate that you have seen an exit
-  }
-  //If tails_num does not point at a circuit outlet recursively call the function 
-
-  if (units[unit_num].tails_num<num_units) {
-    mark_units(units[unit_num].tails_num); 
-  } else {
-    // ...Potentially do something to indicate that you have seen an exit
-  }
+		//if not traversed at all
+	}
+	return true;
 }
 
 
@@ -89,16 +150,17 @@ double assess_fitness(vector<CUnit> &circuit) {
   double fitness_score = (gormanium_mass * gormanium_reward)
                        - (waste_mass * waste_cost);
 
-  
   return fitness_score;
-
-
 }
 
 
-bool all_units_marked(vector<CUnit> &circuit) {
 
-  for (int i = 0; i < circuit.size(); i++) {
+bool allUnitsMarked(vector<CUnit> &circuit) {
+
+  bool all_marked = true;
+
+
+  for (int i = 0; i < (int)circuit.size(); i++) {
     if (!circuit[i].mark) {
 	  return false;
     }

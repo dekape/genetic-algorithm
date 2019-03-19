@@ -1,45 +1,29 @@
-class CStream {
+#ifndef CUNIT_H
+#define CUNIT_H
+
+#include "CStream.h"
+
+class CUnit
+{
 public:
+	CUnit();
+	~CUnit();
 
+	CUnit(int id, int conc_num, int tails_num);
 
-  // Proportions - how much of this stream's mass is
-  // concentrate vs tail
-	double conc = 0;
-  double tail = 0;
+	//index of the unit to which this unit�s concentrate stream is connected 
+	int conc_num = -1;
+	//index of the unit to which this unit�s concentrate stream is connected 
+	int tails_num = -1;
+	//A Boolean that is changed to true if the unit has been seen 
+	bool mark = false;
 
+	// Unit id number
+	int id = -1;
 
-  // Operator overloads to help calculations later
-	CStream operator+(CStream &rhs);
-	CStream &operator+=(CStream &rhs);
-
-
+	// Streams for the total input (old and new)
+	// and the two outputs (concentrate and tail)
+	CStream curr_in_feed, old_in_feed,
+		conc_out, tail_out;
 };
-
-
-
-class CUnit {
-  public:
-
-
-  // Indexes to which this unit's output streams are connected 
-  int conc_num;
-  int tails_num;
-  // Mark unit as seen or not seen
-  bool mark;
-
-
-  // Streams for the total input (old and new)
-  // and the two outputs (concentrate and tail)
-  CStream curr_in_feed, old_in_feed, 
-          conc_out, tail_out;
-
-
-  /*
-
-    ...other member functions and variables of CUnit
-
-  */
-
-
-};
-
+#endif // !CUNIT_H
