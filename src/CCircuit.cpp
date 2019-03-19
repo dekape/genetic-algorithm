@@ -26,8 +26,8 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int
 	//If tails_num does not point at a circuit outlet recursively call the function 
 
 	//if its next unit is not an exit, mark it
-	if (units[unit_num].tails_num < num_units) {
-		markUnits(units[unit_num].tails_num, units, conc_exit, tail_exit, num_units);
+	if (units[unit_num].tail_num < num_units) {
+		markUnits(units[unit_num].tail_num, units, conc_exit, tail_exit, num_units);
 	}
 	else {
 		printf("\nFound an exit");
@@ -239,8 +239,8 @@ bool allUnitsMarked(vector<CUnit> &circuit) {
 vector<double> balance_mass(vector<CUnit> &circuit) {
 
   // Set feed circuit input to 10/100
-  circuit[0].old_in_feed.conc = 10;
-  circuit[0].old_in_feed.tail = 100;
+  circuit[0].old_in_feed.value = 10;
+  circuit[0].old_in_feed.waste = 100;
 
 
   // Set marks on all units to false
@@ -264,25 +264,25 @@ void do_unit_cal(int unit_index, vector<CUnit> &circuit) {
 		return;
 	}
 
-	circuit[unit_index].conc.valuable = 0.2 * circuit[unit_index].curr_in_feed.valuable;
+	circuit[unit_index].conc.value = 0.2 * circuit[unit_index].curr_in_feed.value;
 	circuit[unit_index].conc.waste = 0.05 * circuit[unit_index].curr_in_feed.waste;
-	circuit[unit_index].tail.valuable = 0.8 * circuit[unit_index].curr_in_feed.valuable;
+	circuit[unit_index].tail.value = 0.8 * circuit[unit_index].curr_in_feed.value;
 	circuit[unit_index].tail.waste = 0.95 * circuit[unit_index].curr_in_feed.waste;
 	circuit[unit_index].mark = true;
 
 	if (circuit[unit_index].conc_num < circuit.size() && circuit[circuit[unit_index].conc_num].mark) {
-		circuit[circuit[unit_index].conc_num].curr_in_feed.valuable += circuit[unit_index].conc.valuable;
+		circuit[circuit[unit_index].conc_num].curr_in_feed.value += circuit[unit_index].conc.value;
 		circuit[circuit[unit_index].conc_num].curr_in_feed.waste += circuit[unit_index].conc.waste;
 	}
 	else {
-		do_unit_cal(cu.conc);
+		do_unit_cal(circuit[unit_index].conc_num, circuit);
 	}
 
 	if (circuit[unit_index].tail_num < circuit.size() && circuit[circuit[unit_index].tail_num].mark) {
-		circuit[circuit[unit_index].tail_num].curr_in_feed.valuable += circuit[unit_index].tail.valuable;
+		circuit[circuit[unit_index].tail_num].curr_in_feed.value += circuit[unit_index].tail.value;
 		circuit[circuit[unit_index].tail_num].curr_in_feed.waste += circuit[unit_index].tail.waste;
 	}
 	else {
-		do_unit_cal(cu.tail);
+		do_unit_cal(circuit[unit_index].tail_num, circuit);
 	}
 }
