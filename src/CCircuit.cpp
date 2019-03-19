@@ -15,7 +15,7 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int
 	//If conc_num does not point at a circuit outlet recursively call the function
 
 	//if its next unit is not an exit, mark it
-	if (units[unit_num].conc_num < num_units) {
+	if (units[unit_num].conc_num < num_units - 1) {
 		markUnits(units[unit_num].conc_num, units, conc_exit, tail_exit, num_units); //go to 
 	}
 	else {
