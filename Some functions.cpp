@@ -141,3 +141,27 @@ void createOffsprings(int ** parents, int ** children, int no_units, int no_circ
 	delete[] parentA;
 	delete[] parentB;
 }
+
+void checkTermination(int iter_count, int** offspring, int convergence_limit)
+{
+	int count = 0;
+	int convergenceCount = 0;
+	int maxfitness = 0
+		do
+		{
+			createOffsprings(parents, children, int no_units, int no_circuits, double mute_limit, double swap_limit, double* fitness);
+			//Two ways 1. compare the fitness[0] each time 2. compare each elements of the first children
+			if (fitness[0] > max_fitness)
+			{
+				max_fitness = fitness[0];
+				convergenceCount = 1;
+			}
+			else if (fitness[0] == max_fitness)
+			{
+				convergenceCount++;
+			}
+			if (convergenceCount >= convergence_limit) break;
+			std::swap(parent, children);
+			count++
+		} while (count < iter_count);
+}
