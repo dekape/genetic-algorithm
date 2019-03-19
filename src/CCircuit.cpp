@@ -84,16 +84,12 @@ double assess_fitness(double gormanium_mass, double waste_mass) {
 
 bool all_units_marked(vector<CUnit> &circuit) {
 
-
-  bool all_marked = true;
-
-
   for (int i = 0; i < circuit.size(); i++) {
     if (!circuit[i].mark) {
-      all_marked = false;
+	  return false;
     }
   }
-  
+  return true;
 
 }
 
@@ -107,16 +103,48 @@ vector<double> balance_mass(vector<CUnit> &circuit) {
 
 
   // Set marks on all units to false
-
-
-  // Set the old values of all streams to 10/100
-  while(!all_units_marked(circuit)) {
-
+  for (int i = 0; i < circuit.size(); i++) {
+	  circuit[i].mark = false;
+	  circuit[i].curr_in_feed = circuit[i].old_in_feed;
   }
 
+  //// Set the old values of all streams to 10/100
+  //while(!all_units_marked(circuit)) {
+	 // 
+  //}
+
+
+  do_unit_cal(0, circuit);
 
 
 
+}
 
+void do_unit_cal(int unit_index, vector<CUnit> &circuit) {
+	// do_unit
+	if (unit_index >= circuit.size()) {
+		return;
+	}
 
+	circuit[unit_index].conc.valuable = 0.2 * circuit[unit_index].curr_in_feed.valuable;
+	circuit[unit_index].conc.waste = 0.05 * circuit[unit_index].curr_in_feed.waste;
+	circuit[unit_index].tail.valuable = 0.8 * circuit[unit_index].curr_in_feed.valuable;
+	circuit[unit_index].tail.waste = 0.95 * circuit[unit_index].curr_in_feed.waste;
+	circuit[unit_index].mark = true;
+
+	if (circuit[unit_index].conc_num < circuit.size() && circuit[circuit[unit_index].conc_num].mark) {
+		circuit[circuit[unit_index].conc_num].curr_in_feed.valuable += circuit[unit_index].conc.valuable;
+		circuit[circuit[unit_index].conc_num].curr_in_feed.waste += circuit[unit_index].conc.waste;
+	}
+	else {
+		do_unit_cal(cu.conc);
+	}
+
+	if (circuit[unit_index].tail_num < circuit.size() && circuit[circuit[unit_index].tail_num].mark) {
+		circuit[circuit[unit_index].tail_num].curr_in_feed.valuable += circuit[unit_index].tail.valuable;
+		circuit[circuit[unit_index].tail_num].curr_in_feed.waste += circuit[unit_index].tail.waste;
+	}
+	else {
+		do_unit_cal(cu.tail);
+	}
 }
