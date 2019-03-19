@@ -7,12 +7,13 @@ class CUnit
 {
 public:
 	CUnit();
-	CUnit(int id, int tails_num, int);
 	~CUnit();
 
-	//index of the unit to which this unit’s concentrate stream is connected 
+	CUnit(int id, int conc_num, int tails_num);
+
+	//index of the unit to which this unitï¿½s concentrate stream is connected 
 	int conc_num = -1;
-	//index of the unit to which this unit’s concentrate stream is connected 
+	//index of the unit to which this unitï¿½s concentrate stream is connected 
 	int tails_num = -1;
 	//A Boolean that is changed to true if the unit has been seen 
 	bool mark = false;
@@ -25,6 +26,7 @@ public:
 	CStream curr_in_feed, old_in_feed,
 		conc_out, tail_out;
 };
+
 
 
 #endif // !CUNIT_H

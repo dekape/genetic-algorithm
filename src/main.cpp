@@ -2,7 +2,10 @@
 #include <iostream>
 #include "Genetic_Algorithm.h"
 #include "CUnit.h"
+#include "CUnit.cpp"
 #include "CCircuit.h"
+#include "CStream.h"
+#include "CStream.cpp"
 
 using namespace std;
 
@@ -57,6 +60,6 @@ int main(int argc, char * argv[])
 	delete[] fitness;
 	delete[] best_circuit;
 
-	system("pause");
+	//system("pause");
 	return 0;
 }

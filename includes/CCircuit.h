@@ -9,8 +9,6 @@ using namespace std;
 
 const int num_units = 10;
 
-bool checkValidity(int *circuit_vector);
-
 void markUnits(int unit_num);
 
 double assessFitness(double gormanium_mass, double waste_mass);

@@ -14,8 +14,8 @@ CUnit::CUnit(int id, int conc_num, int tails_num)
 	this->tails_num = tails_num;
 }
 
-
 CUnit::~CUnit()
 {
 }
+
 

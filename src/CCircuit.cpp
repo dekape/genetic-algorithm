@@ -1,13 +1,8 @@
+
 #include "CCircuit.h"
 
 using namespace std;
 vector<CUnit> units(num_units);
-
-
-bool checkValidity(int *circuit_vector)
-{
-  return true;
-}
 
 
 void markUnits(int unit_num) {

@@ -27,8 +27,6 @@ void pairParents(int ** circuits, int * parentA, int * parentB, int no_units, in
 
 void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit);
 
-bool checkValidity(int *int_array, CUnit *circuit, int no_units);
-
 void resetMarks(CUnit *units, int no_units);
 
 #endif // !GENETIC_ALGORITHM_H
