@@ -13,13 +13,15 @@ int main(int argc, char * argv[]){
     CUnit circuit[3];
     intArrayToUnits(valid, circuit, 1);
     
+    
     std::cout << "Check_Validity({0,1,2}):\n";
     if(checkValidity(valid, circuit, 1))
-        
         std::cout  << "pass\n";
     else
         std::cout << "fail\n";
     
+
+
     intArrayToUnits(invalid, circuit, 1);
     std::cout << "Check_Validity({0,2,2}):\n";
     if (checkValidity(invalid, circuit, 1))
@@ -45,4 +47,5 @@ int main(int argc, char * argv[]){
         std::cout << "fail\n";
     else
         std::cout << "pass\n";
+    
 }

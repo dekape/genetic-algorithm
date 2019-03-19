@@ -5,10 +5,11 @@
 #include "CCircuit.h"
 
 //std::vector<CUnit> units(num_units);
-void intArrayToUnits(int *int_array, CUnit *circuit, int no_units){
-    for(int i=0;i<no_units;i++){
-        circuit[i].conc_num = int_array[(i * 2) + 1];
-        circuit[i].tails_num = int_array[(i * 2) + 2];
+void intArrayToUnits(int *int_array, CUnit *circuit, int no_units)
+{
+    for(int i=1;i<no_units*2 + 1;i+=2){
+        circuit[i/2].conc_num = int_array[i];
+        circuit[i/2].tails_num = int_array[i + 1];
     }
 }
 
@@ -30,13 +31,12 @@ void resetMarks(CUnit *units, int no_units)
   {
     units[i].mark = false;
   }
-  
 }
+
 bool checkValidity(int *int_array, CUnit *circuit, int no_units)
 {
   bool conc_exit(false), tail_exit(false);
-
-  markUnits(int_array[0], circuit, conc_exit, tail_exit); //units[0].id
+  markUnits(int_array[0], circuit, conc_exit, tail_exit, no_units); //units[0].id
   //if not traversed to exit
   if(!conc_exit && !tail_exit)
   {
@@ -71,8 +71,8 @@ bool checkValidity(int *int_array, CUnit *circuit, int no_units)
       return false;
     }
     printf("\nChecking we can find both exits from unit %d", i/2);
-    conc_exit = false; tail_exit = false; resetMarks(circuit, num_units);
-    markUnits(i/2, circuit, conc_exit, tail_exit);
+    conc_exit = false; tail_exit = false; resetMarks(circuit, no_units);
+    markUnits(i/2, circuit, conc_exit, tail_exit, no_units);
     if(!conc_exit || !tail_exit)
     {
       printf("\nCan't find an exit from unit %d", i/2);
@@ -86,7 +86,7 @@ bool checkValidity(int *int_array, CUnit *circuit, int no_units)
 }
 
 //CUnit * units
-void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit) {
+void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int no_units) {
 
   //if marked, dont bother
   if (units[unit_num].mark) return;
@@ -99,10 +99,11 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit) {
   //If conc_num does not point at a circuit outlet recursively call the function
 
   //if its next unit is not an exit, mark it
-  if (units[unit_num].conc_num<num_units) {
-    markUnits(units[unit_num].conc_num, units, conc_exit, tail_exit); //go to 
+  if (units[unit_num].conc_num<no_units) {
+    markUnits(units[unit_num].conc_num, units, conc_exit, tail_exit, no_units); //go to 
   } 
-  else {
+  else
+   {
     printf("\nFound an exit");
     conc_exit = true;
     // ...Potentially do something to indicate that you have seen an exit
@@ -110,9 +111,11 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit) {
   //If tails_num does not point at a circuit outlet recursively call the function 
 
   //if its next unit is not an exit, mark it
-  if (units[unit_num].tails_num<num_units) {
-    markUnits(units[unit_num].tails_num, units, conc_exit, tail_exit); 
-  } else {
+  if (units[unit_num].tails_num<no_units) {
+    markUnits(units[unit_num].tails_num, units, conc_exit, tail_exit, no_units); 
+  } 
+  else 
+  {
     printf("\nFound an exit");
 
     tail_exit = true;
