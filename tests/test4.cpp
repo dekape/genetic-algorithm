@@ -30,6 +30,7 @@ int main(int argc, char * argv[])
 		if (vec2[i] != vec1[i]) flag = true;
 		else
 		{
+		    flag = false;
 			break;
 		}
 	}
@@ -41,6 +42,7 @@ int main(int argc, char * argv[])
 		if (vec3[i] == vec1[i]) flag_no = true;
 		else
 		{
+		    flag_no = false;
 			break;
 		}
 	}
