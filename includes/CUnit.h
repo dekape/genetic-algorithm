@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CUNIT_H
+#define CUNIT_H
+
 #include "CStream.h"
 
 class CUnit
@@ -23,4 +25,8 @@ public:
 	CStream curr_in_feed, old_in_feed,
 		conc_out, tail_out;
 };
+
+
+#endif // !CUNIT_H
+
 

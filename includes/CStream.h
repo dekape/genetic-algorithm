@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CSTREAM_H
+#define CSTREAM_H
 
 class CStream {
 public:
@@ -15,4 +16,10 @@ public:
 	CStream operator+(CStream &rhs);
 	CStream &operator+=(CStream &rhs);
 };
+
+
+#endif // !CSTREAM_H
+
+
+
 
