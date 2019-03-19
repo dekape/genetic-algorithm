@@ -2,6 +2,9 @@
 
 CUnit::CUnit()
 {
+	this->id = -1;
+	this->conc_num = -1;
+	this->tails_num = -1;
 
 }
 
@@ -17,6 +20,13 @@ CUnit::~CUnit()
 {
 }
 
+
+CStream::CStream()
+{
+	conc = 0; tail = 0;
+}
+
+CStream::~CStream() {}
 
 // Addition operator override
 CStream CStream::operator+(CStream &rhs) {

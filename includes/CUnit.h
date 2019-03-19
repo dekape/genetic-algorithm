@@ -7,10 +7,7 @@ public:
 	double conc;
 	double tail;
 
-	CStream() 
-	{
-		conc = 0; tail = 0;
-	}
+	CStream();
 
 	~CStream();
 
@@ -24,7 +21,7 @@ class CUnit
 {
 public:
 	CUnit();
-	CUnit(int id, int tails_num, int );
+	CUnit(int id, int tails_num, int);
 	~CUnit();
 
 	//index of the unit to which this unit’s concentrate stream is connected 
