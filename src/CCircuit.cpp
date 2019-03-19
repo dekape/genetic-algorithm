@@ -111,19 +111,6 @@ void unitArrayToVector(CUnit *unit_array, vector<CUnit> &unit_vector, int num_un
 
 }
 
-bool allUnitsMarked(vector<CUnit> &circuit) {
-
-  bool all_marked = true;
-
-
-  for (int i = 0; i < (int)circuit.size(); i++) {
-    if (!circuit[i].mark) {
-      all_marked = false;
-    }
-  }
-  
-  return all_marked;
-}
 
 double assess_fitness(vector<CUnit> &circuit) {
   /* Return a fitness value given the masses of the ouputs from a circuit.
@@ -155,7 +142,7 @@ double assess_fitness(vector<CUnit> &circuit) {
 	double gormanium_mass = 0;
 	double waste_mass = 0;
 
-	for (int i = 0; i < circuit.size(); i++)
+	for (auto i = 0; i < circuit.size(); i++)
 	{
 		if (circuit[i].conc_num == output_num_1) {
 			gormanium_mass = circuit[i].conc.value;
@@ -182,7 +169,7 @@ bool allUnitsMarked(vector<CUnit> &circuit) {
   bool all_marked = true;
 
 
-  for (int i = 0; i < (int)circuit.size(); i++) {
+  for (auto i = 0; i < (int)circuit.size(); i++) {
     if (!circuit[i].mark) {
 	  return false;
     }
@@ -194,19 +181,23 @@ bool allUnitsMarked(vector<CUnit> &circuit) {
 
 double balance_mass(vector<CUnit> &circuit, double tol) {
 
-  // Set feed circuit input to 10/100
-  circuit[0].old_in_feed.value = 10;
-  circuit[0].old_in_feed.waste = 100;
 
 
-  // Set marks on all units to false
-  for (int i = 0; i < circuit.size(); i++) {
-	  circuit[i].mark = false;
-	  circuit[i].curr_in_feed = circuit[i].old_in_feed;
-  }
+
+	// Set feed circuit input to 10/100
+	circuit[0].old_in_feed.value = 10;
+	circuit[0].old_in_feed.waste = 100;
 
 
-  do_unit_cal(0, circuit);
+	// Set marks on all units to false
+	for (auto i = 0; i < circuit.size(); i++) {
+		circuit[i].mark = false;
+		circuit[i].curr_in_feed = circuit[i].old_in_feed;
+	}
+
+  
+	do_unit_cal(0, circuit);
+
 
   
 	return 0.0;
@@ -215,10 +206,7 @@ double balance_mass(vector<CUnit> &circuit, double tol) {
 }
 
 void do_unit_cal(int unit_index, vector<CUnit> &circuit) {
-	// do_unit
-	if (unit_index >= circuit.size()) {
-		return;
-	}
+	
 
 	circuit[unit_index].conc.value = 0.2 * circuit[unit_index].curr_in_feed.value;
 	circuit[unit_index].conc.waste = 0.05 * circuit[unit_index].curr_in_feed.waste;
@@ -241,4 +229,5 @@ void do_unit_cal(int unit_index, vector<CUnit> &circuit) {
 	else {
 		do_unit_cal(circuit[unit_index].tail_num, circuit);
 	}
+
 }

@@ -16,7 +16,7 @@ int main(int argc, char * argv[])
     // Intitialise test circuit as array of ints
     // Provided in lecture slides 
     int num_units = 5;
-    int actual_fitness = 24.82;
+    double actual_fitness = 24.82;
     int test_array[11] = {0, 4, 3, 2, 0, 5, 4, 4, 6, 2, 1};
 
     
@@ -45,6 +45,7 @@ int main(int argc, char * argv[])
 
     // See if the difference is within tolerance
     double difference = fitness - actual_fitness;
+	printf("\n");
     if (difference < 10e-6) {
         std::cout  << "pass\n";
 	} 
@@ -53,5 +54,7 @@ int main(int argc, char * argv[])
 	    std::cout << "fail\n";
     }
     
+
+	system("pause");
 
 }
