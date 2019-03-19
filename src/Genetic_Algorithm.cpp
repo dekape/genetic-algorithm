@@ -127,22 +127,32 @@ void crossOver(int *circuitA, int *circuitB, int no_units)
 }
 
 
-void mutate(int *circuit, int no_unit)
+void mutate(int *circuit, int no_unit, double mute_limit)
 {
 	double mute_rate; //come out a random rate
 
-	double mute_limit = 0.01; //mutation probability
+	//double mute_limit = 0.01; //mutation probability
 
 	for (int i = 0; i < 2 * no_unit + 1; i++)
 	{
 		mute_rate = ((double)rand()) / RAND_MAX;
+
 		if (mute_rate <= mute_limit && i != 0)
 		{
-			circuit[i] = (circuit[i] + no_unit + 2 + rand() % (no_unit + 2)) % (no_unit + 2);
+			int temp = circuit[i];
+			do
+			{
+				circuit[i] = (circuit[i] + no_unit + 2 + rand() % (no_unit + 2)) % (no_unit + 2);
+			} while (temp == circuit[i]);
+
 		}
 		else if (mute_rate <= mute_limit && i == 0)
 		{
-			circuit[i] = (circuit[i] + no_unit + rand() % no_unit) % no_unit;
+			int temp = circuit[i];
+			do
+			{
+				circuit[i] = (circuit[i] + no_unit + rand() % no_unit) % no_unit;
+			} while (temp == circuit[i]);
 		}
 	}
 }
