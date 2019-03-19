@@ -39,7 +39,7 @@ void mark_units(int unit_num) {
 }
 
 
-double assess_fitness(double gormanium_mass, double waste_mass) {
+double assess_fitness(vector<CUnit> &circuit) {
   /* Return a fitness value given the masses of the ouputs from a circuit.
 
 
@@ -65,6 +65,20 @@ double assess_fitness(double gormanium_mass, double waste_mass) {
     waste masses
   */
 
+	int output_num_1 = circuit.size();
+	int output_num_2 = circuit.size() + 1;
+	double gormanium_mass = 0;
+	double waste_mass = 0;
+
+	for (int i = 0; i < circuit.size(); i++)
+	{
+		if (circuit[i].conc_num == output_num_1) {
+			gormanium_mass = circuit[i].conc_out.conc;
+		}
+		if (circuit[i].tail_num == output_num_2) {
+			waste_mass = circuit[i].tail_out.tail;
+		}
+	}
 
   // Weights for gormanium and waste
   double gormanium_reward = 100;
@@ -107,11 +121,6 @@ vector<double> balance_mass(vector<CUnit> &circuit) {
 	  circuit[i].mark = false;
 	  circuit[i].curr_in_feed = circuit[i].old_in_feed;
   }
-
-  //// Set the old values of all streams to 10/100
-  //while(!all_units_marked(circuit)) {
-	 // 
-  //}
 
 
   do_unit_cal(0, circuit);
