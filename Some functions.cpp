@@ -89,7 +89,7 @@ void pairParents(int ** circuits, int * parentA, int * parentB, int no_units, in
 		totalFitness += fitness[i];
 	}
 
-	ref1 = ((double)rand()) / RAND_MAX; //get a random number within the range of totalFitness
+	double ref1 = ((double)rand()) / RAND_MAX; //get a random number within the range of totalFitness
 	double refNum1 = ref1 * totalFitness;
 	double fitnessRef = 0; //use a reference number to get the index
 	int* fitnessind = new int[int(totalFitness)];
@@ -129,4 +129,33 @@ void pairParents(int ** circuits, int * parentA, int * parentB, int no_units, in
 		parentA[i] = circuits[index1][i];
 		parentB[i] = circuits[index2][i];
 	}
+}
+
+void createOffsprings(int ** parents, int ** children, int * parentA, int * parentB, int no_units, int no_circuits, double* fitness)
+{
+	int num = 0;
+	do
+	{
+		pairParents(parents, parentA, parentB, no_units, no_circuits, fitness);
+		crossOver(parentA, parentB);
+		mutate(parentA, no_units);
+		mutate(parentB, no_units);
+		if (checkValidity(parentA, parentA[0], no_units))
+		{
+			for (int i = 0; i < 2 * no_units + 1; i++) //assign it
+			{
+				children[num][i] = parentA[i];
+				num++;
+			}
+		}
+
+		if (checkValidity(parentB, parentB[0], no_units))
+		{
+			for (int i = 0; i < 2 * no_units + 1; i++) //assign it
+			{
+				children[num][i] = parentB[i];
+				num++;
+			}
+		}
+	} while (num < no_circuits);
 }
