@@ -81,6 +81,7 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int
 		markUnits(units[unit_num].conc_num, units, conc_exit, tail_exit, num_units); //go to 
 	}
 	else {
+		if(units[unit_num].conc_num == num_units)
 		conc_exit = true;
 		// ...Potentially do something to indicate that you have seen an exit
 	}
@@ -91,7 +92,7 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int
 		markUnits(units[unit_num].tails_num, units, conc_exit, tail_exit, num_units);
 	}
 	else {
-
+		if(units[unit_num].tails_num == num_units + 1)
 		tail_exit = true;
 		// ...Potentially do something to indicate that you have seen an exit
 	}
