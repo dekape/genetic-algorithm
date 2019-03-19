@@ -10,7 +10,7 @@ using namespace std;
 
 void generateCircuits(int no_units, int no_circuits, int** parents);
 
-bool checkValidity(int* circuit, int id_feed, int no_units);
+bool checkValidity(int *int_array, CUnit *circuit, int no_units);
 
 void computeFitness(CUnit** circuits, double*fitness, int no_circuits);
 

@@ -15,4 +15,4 @@ double assessFitness(double gormanium_mass, double waste_mass);
 
 bool allUnitsMarked(vector<CUnit> &circuit);
 
-vector<double> balanceMass(vector<CUnit> &circuit);
+//vector<double> balanceMass(vector<CUnit> &circuit);
