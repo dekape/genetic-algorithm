@@ -111,7 +111,9 @@ void pairParents(int ** circuits, int * parentA, int * parentB, int no_units, in
 
 void createOffsprings(int ** parents, int ** children, int no_units, int no_circuits, double mute_limit, double* fitness)
 {
-	int num = 0;
+	selectBestCircuit(parents, fitness, CCircuit& best_circuit, no_circuits, no_units);
+	children[0] = best_circuit;
+	int num = 1;
 	int* parentA = new int[2 * no_units + 1];
 	int* parentB = new int[2 * no_units + 1];
 	do
