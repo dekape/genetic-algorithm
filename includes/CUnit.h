@@ -27,5 +27,3 @@ public:
 		conc_out, tail_out;
 };
 #endif // !CUNIT_H
-
-

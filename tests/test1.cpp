@@ -4,7 +4,6 @@
 #include "CCircuit.h"
 #include "CStream.h"
 
-
 int main(int argc, char * argv[]){
   //simple valid case
   int valid[3] = {0, 1, 2};

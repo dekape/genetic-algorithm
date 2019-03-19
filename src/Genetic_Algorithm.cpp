@@ -212,8 +212,3 @@ void pairParents(int ** circuits, int * parentA, int * parentB, int no_units, in
 		parentB[i] = circuits[index2][i];
 	}
 }
-
-
-
-
-
