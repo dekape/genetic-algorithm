@@ -11,11 +11,11 @@
 
 using namespace std;
 
-void unitsToIntArray(int *int_array, CUnit *units_to_convert, int no_units);
+void unitsToIntArray(int *int_array, int feed_id, CUnit *units_to_convert, int no_units);
 
 void intArrayToUnits(int *int_array, CUnit *circuit, int no_units);
 
-void generateCircuits(int no_units, int no_circuits, int** parents);
+void generateCircuits(int no_units, int no_circuits, CCircuit* parents);
 
 void computeFitness(CUnit** circuits, double*fitness, int no_circuits);
 
