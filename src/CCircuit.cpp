@@ -1,15 +1,77 @@
 #include "CCircuit.h"
+#include "Genetic_Algorithm.h"
 
 using namespace std;
 
-void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int num_units) {
+CCircuit::CCircuit()
+{
+	this->circuit_ints = nullptr;
+	this->circuit_units = nullptr;
+}
 
+void CCircuit::initialise(int no_units)
+{
+	this->feed_id = -1;
+	this->no_units = -1;
+	this->circuit_ints = new int[2 * no_units + 1];
+	this->circuit_units = new CUnit[no_units];
+}
+
+CCircuit::CCircuit(int no_units)
+{
+	this->feed_id = -1;
+	this->no_units = -1;
+	this->circuit_ints = new int[2*no_units + 1];
+	this->circuit_units = new CUnit[no_units];
+}
+
+CCircuit::CCircuit(int no_units, int* circuit_array)
+{
+	this->feed_id = circuit_array[0];
+	this->no_units = no_units;
+	this->circuit_ints = new int[2 * no_units + 1];
+	for (int i = 0; i < 2 * no_units + 1; i++)
+		this->circuit_ints[i] = circuit_array[i];
+	this->circuit_units = new CUnit[no_units];
+	intArrayToUnits(circuit_array, this->circuit_units, no_units);
+}
+
+CCircuit::CCircuit(int no_units, int feed, CUnit* circuit_array)
+{
+	this->feed_id = feed;
+	this->no_units = no_units;
+	this->circuit_units = new CUnit[no_units];
+	for (int i = 0; i < no_units; i++)
+		this->circuit_units[i] = circuit_array[i];
+	this->circuit_ints = new int[2 * no_units + 1];
+	unitsToIntArray(this->circuit_ints, feed, circuit_array, no_units);
+}
+
+CCircuit::~CCircuit()
+{
+	delete[] circuit_ints;
+	delete[] circuit_units;
+}
+
+CCircuit::CCircuit(CCircuit &other)
+{
+	this->feed_id = other.feed_id;
+	this->no_units = other.no_units;
+	circuit_ints = new int[no_units * 2 + 1];
+	circuit_units = new CUnit[no_units];
+
+	for (int i = 0; i < no_units * 2 + 1; i++)
+		circuit_ints[i] = other.circuit_ints[i];
+	for (int i = 0; i < no_units; i++)
+		circuit_units[i] = other.circuit_units[i];
+}
+
+void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int num_units) {
 	//if marked, dont bother
-	if (units[unit_num].mark) return;
-	printf("\nLooking at unit %d", unit_num);
+	if (units[unit_num].mark)return;
 	//mark it as visited
 	units[unit_num].mark = true;
-
+	
 	//If we have seen this unit already exit
 	//Mark that we have now seen the unit
 	//If conc_num does not point at a circuit outlet recursively call the function
@@ -19,7 +81,6 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int
 		markUnits(units[unit_num].conc_num, units, conc_exit, tail_exit, num_units); //go to 
 	}
 	else {
-		printf("\nFound an exit");
 		conc_exit = true;
 		// ...Potentially do something to indicate that you have seen an exit
 	}
@@ -30,7 +91,6 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int
 		markUnits(units[unit_num].tails_num, units, conc_exit, tail_exit, num_units);
 	}
 	else {
-		printf("\nFound an exit");
 
 		tail_exit = true;
 		// ...Potentially do something to indicate that you have seen an exit
@@ -46,34 +106,35 @@ void resetMarks(CUnit *units, int no_units)
 }
 
 
-bool checkValidity(int *int_array, CUnit *circuit, int no_units)
+bool checkValidity(CCircuit circuit)
 {
+	int no_units = circuit.no_units;
+	CUnit* circuit_units = circuit.circuit_units;
+	int *int_array = circuit.circuit_ints;
 	bool conc_exit(false), tail_exit(false);
 
-	markUnits(int_array[0], circuit, conc_exit, tail_exit, no_units); //units[0].id
+	resetMarks(circuit_units, no_units);
+	markUnits(int_array[0], circuit_units, conc_exit, tail_exit, no_units); //units[0].id
+
 	//if not traversed to exit
 	if (!conc_exit && !tail_exit)
 	{
-		printf("\nOne or both exit not found");
 		return false;
 	}
 	//check traverse every one
 	for (int i = 0; i < no_units; i++)
 	{
-		if (!circuit[i].mark)
+		if (!circuit_units[i].mark)
 		{
-			printf("\nNot every unit traversed");
 			return false;
 		}
 	}
-	printf("\n Conc? %d \n Tail? %d", (int)conc_exit, (int)tail_exit);
 	for (int i = 1; i < 2 * no_units + 1; i += 2)
 	{
 		//reset flags
 		if (int_array[i] == i / 2 || int_array[i + 1] == i / 2)
 			//if(units[j].conc_num == i || units[j].tails_num == i)
 		{
-			printf("\nOutput goes to itself");
 			return false;
 		}
 		//do mark units
@@ -81,15 +142,12 @@ bool checkValidity(int *int_array, CUnit *circuit, int no_units)
 		if (int_array[i] == int_array[i + 1])
 			//if(units[j].conc_num == units[j].tails_num)
 		{
-			printf("\nBoth outputs go to same place");
 			return false;
 		}
-		printf("\nChecking we can find both exits from unit %d", i / 2);
-		conc_exit = false; tail_exit = false; resetMarks(circuit, no_units);
-		markUnits(i / 2, circuit, conc_exit, tail_exit, no_units);
+		conc_exit = false; tail_exit = false; resetMarks(circuit_units, no_units);
+		markUnits(i / 2, circuit_units, conc_exit, tail_exit, no_units);
 		if (!conc_exit || !tail_exit)
 		{
-			printf("\nCan't find an exit from unit %d", i / 2);
 			return false;
 		}
 		//if conc goes to itself, tails goes to itself
