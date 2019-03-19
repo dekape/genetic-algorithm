@@ -102,56 +102,13 @@ bool checkValidity(int *int_array, CUnit *circuit, int no_units)
 
 // CIRCUIT MODELLING TEAM CODE BELOW //
 
+void unitArrayToVector(CUnit *unit_array, vector<CUnit> &unit_vector, int num_units) {
 
-double assessFitness(double gormanium_mass, double waste_mass) 
-{
-  /* Return a fitness value given the masses of the ouputs from a circuit.
+	// One by one insert unit from array into vector 
+	for (int i = 0; i < num_units; i++) {
+		unit_vector.push_back(unit_array[i]);
+	}
 
-
-  Notes
-  -----
-  The weights used here as the rewards and costs
-  prescribed in the documentation provided by stephen.
-
-
-  Parameters
-  ----------
-  double gormanium_mass: value between 0 and 10
-    Mass of pure product from circuit
-
-  double waste_mass: value between 0 and 100
-    Mass of waste from circuit
-
-
-  Returns
-  -------
-  double fitness_score: 
-    Score calculate by weighted sum of gormanium and
-    waste masses
-  */
-
-
-  // Weights for gormanium and waste
-  double gormanium_reward = 100;
-  double waste_cost = 500;
-  
-
-  // Calculate weighted fitness value based on masses
-  double fitness_score = (gormanium_mass * gormanium_reward)
-                       - (waste_mass * waste_cost);
-
-  return fitness_score;
-}
-
-
-// CIRCUIT MODELLING TEAM CODE BELOW //
-
-void resetMarks(CUnit *units, int no_units)
-{
-  for(int i = 0; i < no_units; i++)
-  {
-    units[i].mark = false;
-  }
 }
 
 
@@ -221,31 +178,41 @@ bool allUnitsMarked(vector<CUnit> &circuit) {
 
 }
 
+void cal_convergence_value(vector<CUnit> &circuit, double value_c, double waste_c){
+	value_c = -10000;
+	waste_c = -10000;
+	for(int i = 0; i < circuit.size(); i++)
+	{
+		if (value_c < abs(circuit[i].old_in_feed.value - circuit[i].curr_in_feed.value)){
+			value_c = abs(circuit[i].old_in_feed.value - circuit[i].curr_in_feed.value);
+		}
+		if (waste_c < abs(circuit[i].old_in_feed.waste - circuit[i].curr_in_feed.waste)){
+			waste_c = abs(circuit[i].old_in_feed.waste - circuit[i].curr_in_feed.waste);
+		}
+	}
+	
+}
 
 double balance_mass(vector<CUnit> &circuit, double tol) {
 
 	// Set feed circuit input to 10/100
   circuit[0].old_in_feed.value = 10;
   circuit[0].old_in_feed.waste = 100;
+	
+	double value_c = 0;
+	double waste_c = 0;
 
-	double convergence_v = 1000;
 	int it = 0;
-	while (convergence_v > tol && it++ < 100){
+	while ((value_c > tol || waste_c >tol ) && it++ < 1000){
 		// Set marks on all units to false
   	for (int i = 0; i < circuit.size(); i++) {
 	  	circuit[i].mark = false;
-	 	  circuit[i].curr_in_feed = circuit[i].old_in_feed;
+	 	  circuit[i].old_in_feed = circuit[i].curr_in_feed;
   	}
-		  do_unit_cal(0, circuit);
+		do_unit_cal(0, circuit);
 
+		cal_convergence_value(circuit, value_c, waste_c);
 	}
-
-  
-
-
-  
-
-
 
 	return assess_fitness(circuit);
 
@@ -279,3 +246,4 @@ void do_unit_cal(int unit_index, vector<CUnit> &circuit) {
 		do_unit_cal(circuit[unit_index].tail_num, circuit);
 	}
 }
+

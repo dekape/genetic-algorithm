@@ -7,6 +7,10 @@ void intArrayToUnits(int *int_array, CUnit *circuit, int no_units)
     for(int i=1;i<no_units*2 + 1;i+=2){
         circuit[i/2].conc_num = int_array[i];
         circuit[i/2].tail_num = int_array[i + 1];
+<<<<<<< HEAD
+=======
+		circuit[i/2].id = i/2;
+>>>>>>> hitesh
     }
 }
 
