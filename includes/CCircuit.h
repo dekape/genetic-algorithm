@@ -1,7 +1,18 @@
+#pragma	once
+#include <vector>
+#include <stdio.h>
+#include "CUnit.h"
+
+using namespace std;
+
 const int num_units = 10;
 
-bool Check_Validity(int *circuit_vector);
+bool checkValidity(int *circuit_vector);
 
-void mark_units(int unit_num);
+void markUnits(int unit_num);
 
-double assess_fitness(double gormanium_mass, double waste_mass);
+double assessFitness(double gormanium_mass, double waste_mass);
+
+bool allUnitsMarked(vector<CUnit> &circuit);
+
+vector<double> balanceMass(vector<CUnit> &circuit);

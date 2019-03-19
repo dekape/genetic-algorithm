@@ -1,20 +1,16 @@
-#include <vector>
-#include <stdio.h>
-#include <CUnit.h>
-#include <CCircuit.h>
-
+#include "CCircuit.h"
 
 using namespace std;
 vector<CUnit> units(num_units);
 
 
-bool Check_Validity(int *circuit_vector)
+bool checkValidity(int *circuit_vector)
 {
   return true;
 }
 
 
-void mark_units(int unit_num) {
+void markUnits(int unit_num) {
 
   if (units[unit_num].mark) return;
 
@@ -25,21 +21,21 @@ void mark_units(int unit_num) {
   //If conc_num does not point at a circuit outlet recursively call the function
 
   if (units[unit_num].conc_num<num_units) {
-    mark_units(units[unit_num].conc_num);
+	  markUnits(units[unit_num].conc_num);
   } else {
     // ...Potentially do something to indicate that you have seen an exit
   }
   //If tails_num does not point at a circuit outlet recursively call the function 
 
   if (units[unit_num].tails_num<num_units) {
-    mark_units(units[unit_num].tails_num); 
+	  markUnits(units[unit_num].tails_num);
   } else {
     // ...Potentially do something to indicate that you have seen an exit
   }
 }
 
 
-double assess_fitness(double gormanium_mass, double waste_mass) {
+double assessFitness(double gormanium_mass, double waste_mass) {
   /* Return a fitness value given the masses of the ouputs from a circuit.
 
 
@@ -82,7 +78,7 @@ double assess_fitness(double gormanium_mass, double waste_mass) {
 }
 
 
-bool all_units_marked(vector<CUnit> &circuit) {
+bool allUnitsMarked(vector<CUnit> &circuit) {
 
 
   bool all_marked = true;
@@ -94,29 +90,25 @@ bool all_units_marked(vector<CUnit> &circuit) {
     }
   }
   
-
+  return all_marked;
 }
 
-
-vector<double> balance_mass(vector<CUnit> &circuit) {
-
-
-  // Set feed circuit input to 10/100
-  circuit[0].old_in_feed.conc = 10;
-  circuit[0].old_in_feed.tail = 100;
-
-
-  // Set marks on all units to false
-
-
-  // Set the old values of all streams to 10/100
-  while(!all_units_marked(circuit)) {
-
-  }
-
-
-
-
-
-
-}
+//
+//vector<double> balanceMass(vector<CUnit> &circuit) {
+//
+//
+//  // Set feed circuit input to 10/100
+//  circuit[0].old_in_feed.conc = 10;
+//  circuit[0].old_in_feed.tail = 100;
+//
+//
+//  // Set marks on all units to false
+//
+//
+//  // Set the old values of all streams to 10/100
+//  while(!allUnitsMarked(circuit)) {
+//
+//  }
+//
+//
+//}
