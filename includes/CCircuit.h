@@ -18,6 +18,10 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int
 void resetMarks(CUnit *units, int no_units);
 //vector<double> balanceMass(vector<CUnit> &circuit);
 
+double balance_mass(vector<CUnit> &circuit, double tol);
+
+void do_unit_cal(int unit_index, vector<CUnit> &circuit);
+
 
 #endif // !CCIRCUIT_H
 

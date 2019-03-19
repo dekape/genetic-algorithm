@@ -155,20 +155,6 @@ void resetMarks(CUnit *units, int no_units)
 }
 
 
-bool allUnitsMarked(vector<CUnit> &circuit) {
-
-  bool all_marked = true;
-
-
-  for (int i = 0; i < (int)circuit.size(); i++) {
-    if (!circuit[i].mark) {
-      all_marked = false;
-    }
-  }
-  
-  return all_marked;
-}
-
 double assess_fitness(vector<CUnit> &circuit) {
   /* Return a fitness value given the masses of the ouputs from a circuit.
 
@@ -236,25 +222,32 @@ bool allUnitsMarked(vector<CUnit> &circuit) {
 }
 
 
-vector<double> balance_mass(vector<CUnit> &circuit) {
+double balance_mass(vector<CUnit> &circuit, double tol) {
 
-  // Set feed circuit input to 10/100
+	// Set feed circuit input to 10/100
   circuit[0].old_in_feed.value = 10;
   circuit[0].old_in_feed.waste = 100;
 
+	double convergence_v = 1000;
+	int it = 0;
+	while (convergence_v > tol && it++ < 100){
+		// Set marks on all units to false
+  	for (int i = 0; i < circuit.size(); i++) {
+	  	circuit[i].mark = false;
+	 	  circuit[i].curr_in_feed = circuit[i].old_in_feed;
+  	}
+		  do_unit_cal(0, circuit);
 
-  // Set marks on all units to false
-  for (int i = 0; i < circuit.size(); i++) {
-	  circuit[i].mark = false;
-	  circuit[i].curr_in_feed = circuit[i].old_in_feed;
-  }
-
-
-  do_unit_cal(0, circuit);
+	}
 
   
 
 
+  
+
+
+
+	return assess_fitness(circuit);
 
 }
 
