@@ -22,37 +22,6 @@ void unitsToIntArray(int *int_array, CUnit *units_to_convert, int no_units)
 		int_array[i + 1] = units_to_convert[i / 2].tail_num;
 	}
 }
-
-//void generateCircuitUnits(int no_units, int no_circuits, CUnit** parents)
-//{
-//	int valid_count = 0;
-//	srand(time(NULL));
-//	CUnit* circuit = new CUnit[no_units];
-//
-//	do
-//	{
-//		for (int i = 0; i < no_units; i++)
-//		{
-//			circuit[i] = CUnit(i, rand() % no_units, rand() % no_units);
-//		}
-//
-//		if (checkValidity(circuit, 0, no_units))
-//		{
-//
-//			// Add circuit to parents grid as Unit object
-//			for (int i = 0; i < no_units; i++)
-//			{
-//				//cout << parents[0][0].id << endl;
-//				parents[valid_count][i] = circuit[i];
-//			}
-//
-//			// Increment number of valid circuits
-//			valid_count++;
-//		}
-//	} while (valid_count < no_circuits);
-//
-//}
-
 void computeFitness(CUnit** circuits, double*fitness, int no_circuits)
 {
 	for (int i = 0; i < no_circuits; i++)
@@ -82,37 +51,42 @@ void selectBestCircuit(CUnit**circuits, double* fitness, CUnit* best_circuit, in
 }
 
 
-void generateCircuits(int no_units, int no_circuits, int** parents)
+void generateCircuits(int no_units, int no_circuits, CCircuit* parents)
 {
 	int valid_count = 0;
 	srand(time(NULL));
-	int* circuit = new int[2 * no_units + 1];
-	int indexConsenOut = 1 + 2 * (rand() % no_units);
-	int indexTailingOut = 1 + (2 * (rand() % no_units) + 1);
+	int* circuit_array = new int[2 * no_units + 1];
+	int indexConsenOut;
+	int indexTailingOut;
+	CCircuit Circuit(no_units);
 
 	do
 	{
+		indexConsenOut = 1 + 2 * (rand() % no_units);
+		indexTailingOut = 1 + (2 * (rand() % no_units) + 1);
 		for (int i = 0; i < 2 * no_units + 1; i++)
 		{
-			if (i == indexConsenOut) circuit[i] = 10;
-			else if (i == indexTailingOut) circuit[i] = 11;
-			else circuit[i] = rand() % no_units;
+			if (i == indexConsenOut) circuit_array[i] = 10;
+			else if (i == indexTailingOut) circuit_array[i] = 11;
+			else circuit_array[i] = rand() % no_units;
 		}
 
-		if (true)	// CHECK VALIDITY HERE!!
+		for (int i = 0; i < 2 * no_units + 1; i++) Circuit.circuit_ints[i] = circuit_array[i];
+		Circuit.feed_id = circuit_array[0];
+		Circuit.no_units = no_units;
+		intArrayToUnits(circuit_array, Circuit.circuit_units, no_units);
+
+		if (checkValidity(Circuit))	// CHECK VALIDITY HERE!!
 		{
-			// Add circuit to parents grid as Unit object
-			for (int i = 0; i < 2 * no_units + 1; i++)
-			{
-				//cout << parents[0][0].id << endl;
-				parents[valid_count][i] = circuit[i];
-			}
+			// Add circuit to parents grid
+			parents[valid_count] = CCircuit(no_units, Circuit.circuit_ints);
 
 			// Increment number of valid circuits
 			valid_count++;
 		}
 	} while (valid_count < no_circuits);
 
+	delete[] circuit_array;
 }
 
 
@@ -128,32 +102,22 @@ void crossOver(int *circuitA, int *circuitB, int no_units)
 }
 
 
-void mutate(int *circuit, int no_unit, double mute_limit)
+void mutate(int *circuit, int no_unit)
 {
 	double mute_rate; //come out a random rate
 
-	//double mute_limit = 0.01; //mutation probability
+	double mute_limit = 0.01; //mutation probability
 
 	for (int i = 0; i < 2 * no_unit + 1; i++)
 	{
 		mute_rate = ((double)rand()) / RAND_MAX;
-
 		if (mute_rate <= mute_limit && i != 0)
 		{
-			int temp = circuit[i];
-			do
-			{
-				circuit[i] = (circuit[i] + no_unit + 2 + rand() % (no_unit + 2)) % (no_unit + 2);
-			} while (temp == circuit[i]);
-
+			circuit[i] = (circuit[i] + no_unit + 2 + rand() % (no_unit + 2)) % (no_unit + 2);
 		}
 		else if (mute_rate <= mute_limit && i == 0)
 		{
-			int temp = circuit[i];
-			do
-			{
-				circuit[i] = (circuit[i] + no_unit + rand() % no_unit) % no_unit;
-			} while (temp == circuit[i]);
+			circuit[i] = (circuit[i] + no_unit + rand() % no_unit) % no_unit;
 		}
 	}
 }
