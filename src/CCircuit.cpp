@@ -1,16 +1,18 @@
 #include <vector>
-
 #include <stdio.h>
 #include <CUnit.h>
 #include <CCircuit.h>
 
-std::vector<CUnit> units(num_units);
+
+using namespace std;
+vector<CUnit> units(num_units);
+
 
 bool Check_Validity(int *circuit_vector)
 {
-
   return true;
 }
+
 
 void mark_units(int unit_num) {
 
@@ -75,6 +77,46 @@ double assess_fitness(double gormanium_mass, double waste_mass) {
 
   
   return fitness_score;
+
+
+}
+
+
+bool all_units_marked(vector<CUnit> &circuit) {
+
+
+  bool all_marked = true;
+
+
+  for (int i = 0; i < circuit.size(); i++) {
+    if (!circuit[i].mark) {
+      all_marked = false;
+    }
+  }
+  
+
+}
+
+
+vector<double> balance_mass(vector<CUnit> &circuit) {
+
+
+  // Set feed circuit input to 10/100
+  circuit[0].old_in_feed.conc = 10;
+  circuit[0].old_in_feed.tail = 100;
+
+
+  // Set marks on all units to false
+
+
+  // Set the old values of all streams to 10/100
+  while(!all_units_marked(circuit)) {
+
+  }
+
+
+
+
 
 
 }
