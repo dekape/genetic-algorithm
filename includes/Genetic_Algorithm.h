@@ -11,20 +11,21 @@
 
 using namespace std;
 
-void unitsToIntArray(int *int_array, CUnit *units_to_convert, int no_units);
+void unitsToIntArray(int *int_array, int feed_id, CUnit *units_to_convert, int no_units);
 
 void intArrayToUnits(int *int_array, CUnit *circuit, int no_units);
 
-void generateCircuits(int no_units, int no_circuits, int** parents);
+void generateCircuits(int no_units, int no_circuits, CCircuit* parents);
 
-void computeFitness(CUnit** circuits, double*fitness, int no_circuits);
+void computeFitness(CCircuit* parents, double*fitness, int no_circuits);
 
-void selectBestCircuit(CUnit**circuits, double* fitness, CUnit* best_circuit, int no_circuits, int no_units);
+void selectBestCircuit(CCircuit* circuits, double* fitness, CCircuit& best_circuit, int no_circuits, int no_units);
 
 void crossOver(int *circuitA, int *circuitB, int no_units);
 
-void mutate(int *circuit, int no_unit);
+void mutate(int *circuit, int no_unit, double mute_limit);
 
-void pairParents(int ** circuits, int * parentA, int * parentB, int no_units, int no_circuits, double* fitness);
+void createOffsprings(CCircuit* parents, CCircuit* children, int no_units, int no_circuits, double mute_limit, double* fitness);
+
 
 #endif // !GENETIC_ALGORITHM_H
