@@ -7,11 +7,51 @@
 
 using namespace std;
 
+class CCircuit
+{
+public:
+	CCircuit();
+	CCircuit(int no_units);
+	CCircuit(int no_units, int* circuit_array);
+	CCircuit(int no_units, int feed, CUnit* circuit_array);
+	CCircuit(CCircuit &other);
+
+	CCircuit &operator=(const CCircuit &other)
+	{
+		if (this != &other)
+		{
+			delete[] circuit_ints;
+			delete[] circuit_units;
+
+			feed_id = other.feed_id;
+			no_units = other.no_units;
+			circuit_ints = new int[no_units * 2 + 1];
+			circuit_units = new CUnit[no_units];
+
+			for (int i = 0; i < no_units * 2 + 1; i++)
+				circuit_ints[i] = other.circuit_ints[i];
+			for (int i = 0; i < no_units; i++)
+				circuit_units[i] = other.circuit_units[i];
+		}
+
+		return *this;
+	}
+
+	~CCircuit();
+
+	void initialise(int no_units);
+	int feed_id;
+	int no_units;
+	int* circuit_ints;
+	CUnit* circuit_units;
+};
+
+
 double assessFitness(double gormanium_mass, double waste_mass);
 
 bool allUnitsMarked(vector<CUnit> &circuit);
 
-bool checkValidity(int *int_array, CUnit *circuit, int no_units);
+bool checkValidity(CCircuit circuits);
 
 void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int num_units);
 
