@@ -1,8 +1,9 @@
 #include <vector>
-
 #include <stdio.h>
 #include "CUnit.h"
 #include "CCircuit.h"
+
+using namespace std;
 
 //std::vector<CUnit> units(num_units);
 void intArrayToUnits(int *int_array, CUnit *circuit, int no_units)
@@ -32,6 +33,7 @@ void resetMarks(CUnit *units, int no_units)
     units[i].mark = false;
   }
 }
+
 
 bool checkValidity(int *int_array, CUnit *circuit, int no_units)
 {
@@ -85,9 +87,9 @@ bool checkValidity(int *int_array, CUnit *circuit, int no_units)
   return true;
 }
 
-//CUnit * units
-void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int no_units) {
 
+void mark_units(int unit_num) 
+{
   //if marked, dont bother
   if (units[unit_num].mark) return;
   printf("\nLooking at unit %d", unit_num);
@@ -128,3 +130,84 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int
 
 
 
+double assess_fitness(double gormanium_mass, double waste_mass) {
+  /* Return a fitness value given the masses of the ouputs from a circuit.
+
+
+  Notes
+  -----
+  The weights used here as the rewards and costs
+  prescribed in the documentation provided by stephen.
+
+
+  Parameters
+  ----------
+  double gormanium_mass: value between 0 and 10
+    Mass of pure product from circuit
+
+  double waste_mass: value between 0 and 100
+    Mass of waste from circuit
+
+
+  Returns
+  -------
+  double fitness_score: 
+    Score calculate by weighted sum of gormanium and
+    waste masses
+  */
+
+
+  // Weights for gormanium and waste
+  double gormanium_reward = 100;
+  double waste_cost = 500;
+  
+
+  // Calculate weighted fitness value based on masses
+  double fitness_score = (gormanium_mass * gormanium_reward)
+                       - (waste_mass * waste_cost);
+
+  
+  return fitness_score;
+
+
+}
+
+
+bool all_units_marked(vector<CUnit> &circuit) {
+
+
+  bool all_marked = true;
+
+
+  for (int i = 0; i < circuit.size(); i++) {
+    if (!circuit[i].mark) {
+      all_marked = false;
+    }
+  }
+  
+
+}
+
+
+vector<double> balance_mass(vector<CUnit> &circuit) {
+
+
+  // Set feed circuit input to 10/100
+  circuit[0].old_in_feed.conc = 10;
+  circuit[0].old_in_feed.tail = 100;
+
+
+  // Set marks on all units to false
+
+
+  // Set the old values of all streams to 10/100
+  while(!all_units_marked(circuit)) {
+
+  }
+
+
+
+
+
+
+}
