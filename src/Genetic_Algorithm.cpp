@@ -2,6 +2,14 @@
 
 using namespace std;
 
+void intArrayToUnits(int *int_array, CUnit *circuit, int no_units)
+{
+    for(int i=1;i<no_units*2 + 1;i+=2){
+        circuit[i/2].conc_num = int_array[i];
+        circuit[i/2].tails_num = int_array[i + 1];
+    }
+}
+
 void unitsToIntArray(int *int_array, CUnit *units_to_convert, int no_units)
 {
 	//int_array is where to store answer
@@ -206,7 +214,7 @@ void pairParents(int ** circuits, int * parentA, int * parentB, int no_units, in
 }
 
 
-void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit) {
+void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int num_units) {
 
 	//if marked, dont bother
 	if (units[unit_num].mark) return;
@@ -220,7 +228,7 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit) {
 
 	//if its next unit is not an exit, mark it
 	if (units[unit_num].conc_num < num_units) {
-		markUnits(units[unit_num].conc_num, units, conc_exit, tail_exit); //go to 
+		markUnits(units[unit_num].conc_num, units, conc_exit, tail_exit, num_units); //go to 
 	}
 	else {
 		printf("\nFound an exit");
@@ -231,7 +239,7 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit) {
 
 	//if its next unit is not an exit, mark it
 	if (units[unit_num].tails_num < num_units) {
-		markUnits(units[unit_num].tails_num, units, conc_exit, tail_exit);
+		markUnits(units[unit_num].tails_num, units, conc_exit, tail_exit, num_units);
 	}
 	else {
 		printf("\nFound an exit");
@@ -246,7 +254,7 @@ bool checkValidity(int *int_array, CUnit *circuit, int no_units)
 {
 	bool conc_exit(false), tail_exit(false);
 
-	markUnits(int_array[0], circuit, conc_exit, tail_exit); //units[0].id
+	markUnits(int_array[0], circuit, conc_exit, tail_exit, no_units); //units[0].id
 	//if not traversed to exit
 	if (!conc_exit && !tail_exit)
 	{
@@ -281,8 +289,8 @@ bool checkValidity(int *int_array, CUnit *circuit, int no_units)
 			return false;
 		}
 		printf("\nChecking we can find both exits from unit %d", i / 2);
-		conc_exit = false; tail_exit = false; resetMarks(circuit, num_units);
-		markUnits(i / 2, circuit, conc_exit, tail_exit);
+		conc_exit = false; tail_exit = false; resetMarks(circuit, no_units);
+		markUnits(i / 2, circuit, conc_exit, tail_exit, no_units);
 		if (!conc_exit || !tail_exit)
 		{
 			printf("\nCan't find an exit from unit %d", i / 2);

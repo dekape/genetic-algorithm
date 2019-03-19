@@ -2,33 +2,6 @@
 #include "CCircuit.h"
 
 using namespace std;
-vector<CUnit> units(num_units);
-
-
-void markUnits(int unit_num) {
-
-  if (units[unit_num].mark) return;
-
-  units[unit_num].mark = true;
-
-  //If we have seen this unit already exit
-  //Mark that we have now seen the unit
-  //If conc_num does not point at a circuit outlet recursively call the function
-
-  if (units[unit_num].conc_num<num_units) {
-	  markUnits(units[unit_num].conc_num);
-  } else {
-    // ...Potentially do something to indicate that you have seen an exit
-  }
-  //If tails_num does not point at a circuit outlet recursively call the function 
-
-  if (units[unit_num].tails_num<num_units) {
-	  markUnits(units[unit_num].tails_num);
-  } else {
-    // ...Potentially do something to indicate that you have seen an exit
-  }
-}
-
 
 double assessFitness(double gormanium_mass, double waste_mass) {
   /* Return a fitness value given the masses of the ouputs from a circuit.
@@ -74,7 +47,6 @@ double assessFitness(double gormanium_mass, double waste_mass) {
 
 
 bool allUnitsMarked(vector<CUnit> &circuit) {
-
 
   bool all_marked = true;
 

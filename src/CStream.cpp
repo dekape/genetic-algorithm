@@ -10,7 +10,6 @@ CStream::~CStream() {}
 // Addition operator override
 CStream CStream::operator+(CStream &rhs) {
 
-
     // Create new stream 
 	CStream out_stream;
 
@@ -21,8 +20,6 @@ CStream CStream::operator+(CStream &rhs) {
 
 
 	return out_stream;
-
-
 }
 
 
@@ -35,6 +32,4 @@ CStream &CStream::operator+=(CStream &rhs) {
     
     // return the reference to this modified stream
 	return *this;
-
-
 }

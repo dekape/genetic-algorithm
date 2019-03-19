@@ -1,6 +1,9 @@
 #include <iostream>
 #include "CUnit.h"
+#include "Genetic_Algorithm.h"
 #include "CCircuit.h"
+#include "CStream.h"
+
 
 int main(int argc, char * argv[]){
   //simple valid case
@@ -10,8 +13,7 @@ int main(int argc, char * argv[]){
   int invalid[3] = {0, 2, 2};
   
   CUnit circuit[3];
-  intArrayToUnits(valid, circuit, 1);
-  
+  intArrayToUnits(valid, circuit, 1);  
   std::cout << "Check_Validity({0,1,2}):\n";
   if(checkValidity(valid, circuit, 1))
     

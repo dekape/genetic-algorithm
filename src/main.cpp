@@ -2,10 +2,8 @@
 #include <iostream>
 #include "Genetic_Algorithm.h"
 #include "CUnit.h"
-#include "CUnit.cpp"
 #include "CCircuit.h"
 #include "CStream.h"
-#include "CStream.cpp"
 
 using namespace std;
 
@@ -20,6 +18,24 @@ double* fitness;				// list to store the fitness values of all circuits
 CUnit* best_circuit;			// object to store best circuit based on fitness calculation
 CUnit** parents;				// 2D array to store all parent circuits
 CUnit** offsprings;				// 2D array to store all offspring circuits
+
+using namespace std;
+
+void genRandCircuit(int num_units, int gene_length, int * gene){
+    for(int i=0;i<gene_length;i++){
+        gene[i] = rand() % num_units;
+        cout << "\n Gene[i] = " << gene[i];
+    }
+}
+
+void populateUnits(int num_units, int * gene, CUnit * circuit){
+    for(int i=0;i<num_units;i++){
+        circuit[i].conc_num = rand() % (num_units+3);
+        circuit[i].tails_num = rand() % (num_units+3);
+        circuit[i].mark = false;
+    }
+}
+
 
 int main(int argc, char * argv[])
 {

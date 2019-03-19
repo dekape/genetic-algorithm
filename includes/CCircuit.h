@@ -7,8 +7,6 @@
 
 using namespace std;
 
-const int num_units = 10;
-
 void markUnits(int unit_num);
 
 double assessFitness(double gormanium_mass, double waste_mass);

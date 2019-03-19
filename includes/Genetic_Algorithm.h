@@ -11,6 +11,10 @@
 
 using namespace std;
 
+void unitsToIntArray(int *int_array, CUnit *units_to_convert, int no_units);
+
+void intArrayToUnits(int *int_array, CUnit *circuit, int no_units);
+
 void generateCircuits(int no_units, int no_circuits, int** parents);
 
 bool checkValidity(int *int_array, CUnit *circuit, int no_units);
@@ -25,7 +29,7 @@ void mutate(int *circuit, int no_unit);
 
 void pairParents(int ** circuits, int * parentA, int * parentB, int no_units, int no_circuits, double* fitness);
 
-void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit);
+void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int num_units);
 
 void resetMarks(CUnit *units, int no_units);
 
