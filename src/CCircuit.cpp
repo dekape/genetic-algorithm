@@ -102,58 +102,14 @@ bool checkValidity(int *int_array, CUnit *circuit, int no_units)
 
 // CIRCUIT MODELLING TEAM CODE BELOW //
 
+void unitArrayToVector(CUnit *unit_array, vector<CUnit> &unit_vector, int num_units) {
 
-double assessFitness(double gormanium_mass, double waste_mass) 
-{
-  /* Return a fitness value given the masses of the ouputs from a circuit.
+	// One by one insert unit from array into vector 
+	for (int i = 0; i < num_units; i++) {
+		unit_vector.push_back(unit_array[i]);
+	}
 
-
-  Notes
-  -----
-  The weights used here as the rewards and costs
-  prescribed in the documentation provided by stephen.
-
-
-  Parameters
-  ----------
-  double gormanium_mass: value between 0 and 10
-    Mass of pure product from circuit
-
-  double waste_mass: value between 0 and 100
-    Mass of waste from circuit
-
-
-  Returns
-  -------
-  double fitness_score: 
-    Score calculate by weighted sum of gormanium and
-    waste masses
-  */
-
-
-  // Weights for gormanium and waste
-  double gormanium_reward = 100;
-  double waste_cost = 500;
-  
-
-  // Calculate weighted fitness value based on masses
-  double fitness_score = (gormanium_mass * gormanium_reward)
-                       - (waste_mass * waste_cost);
-
-  return fitness_score;
 }
-
-
-// CIRCUIT MODELLING TEAM CODE BELOW //
-
-void resetMarks(CUnit *units, int no_units)
-{
-  for(int i = 0; i < no_units; i++)
-  {
-    units[i].mark = false;
-  }
-}
-
 
 bool allUnitsMarked(vector<CUnit> &circuit) {
 
@@ -236,7 +192,7 @@ bool allUnitsMarked(vector<CUnit> &circuit) {
 }
 
 
-vector<double> balance_mass(vector<CUnit> &circuit) {
+double balance_mass(vector<CUnit> &circuit, double tol) {
 
   // Set feed circuit input to 10/100
   circuit[0].old_in_feed.value = 10;
@@ -253,7 +209,7 @@ vector<double> balance_mass(vector<CUnit> &circuit) {
   do_unit_cal(0, circuit);
 
   
-
+	return 0.0;
 
 
 }
