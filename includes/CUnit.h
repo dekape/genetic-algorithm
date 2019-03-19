@@ -17,15 +17,26 @@ public:
 
 
 
-class CUnit {
-  public:
 
+public:
+    CUnit();
+    
+    CUnit(int curr_id, int conc, int tail);
+      
+    //index of the unit to which this unit’s concentrate stream is connected
+    int conc_num; //remove = 1
+    //index of the unit to which this unit’s concentrate stream is connected
+    int tails_num;
 
-  // Indexes to which this unit's output streams are connected 
-  int conc_num;
-  int tails_num;
-  // Mark unit as seen or not seen
-  bool mark;
+    int id;
+    //A Boolean that is changed to true if the unit has been seen
+    bool mark;
+
+    /*
+
+    ...other member functions and variables of CUnit
+
+    */
 
 
   // Streams for the total input (old and new)
