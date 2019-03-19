@@ -1,7 +1,23 @@
-const int num_units = 10;
+#ifndef CCIRCUIT_H
+#define CCIRCUIT_H
 
-bool Check_Validity(int *circuit_vector);
+#include <vector>
+#include <stdio.h>
+#include "CUnit.h"
 
-void mark_units(int unit_num);
+using namespace std;
 
-double assess_fitness(double gormanium_mass, double waste_mass);
+double assessFitness(double gormanium_mass, double waste_mass);
+
+bool allUnitsMarked(vector<CUnit> &circuit);
+
+bool checkValidity(int *int_array, CUnit *circuit, int no_units);
+
+void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int num_units);
+
+void resetMarks(CUnit *units, int no_units);
+//vector<double> balanceMass(vector<CUnit> &circuit);
+
+
+#endif // !CCIRCUIT_H
+
