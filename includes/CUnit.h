@@ -4,8 +4,8 @@ public:
 
   // Proportions - how much of this stream's mass is
   // concentrate vs tail
-	double concentrate;
-  double tail;
+	double conc = 0;
+  double tail = 0;
 
 
   // Operator overloads to help calculations later
@@ -30,8 +30,8 @@ class CUnit {
 
   // Streams for the total input (old and new)
   // and the two outputs (concentrate and tail)
-  CStream current_input_feed, old_input_feed, 
-          conc_output, tail_output;
+  CStream curr_in_feed, old_in_feed, 
+          conc_out, tail_out;
 
 
   /*
