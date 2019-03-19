@@ -4,8 +4,15 @@ class CStream {
 public:
 	// Proportions - how much of this stream's mass is
 	// concentrate vs tail
-	double conc = 0;
-	double tail = 0;
+	double conc;
+	double tail;
+
+	CStream() 
+	{
+		conc = 0; tail = 0;
+	}
+
+	~CStream();
 
 	// Operator overloads to help calculations later
 	CStream operator+(CStream &rhs);
