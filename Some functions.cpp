@@ -1,3 +1,9 @@
+//some functions
+bool checkValidity(int* circuit, int id_feed, int no_units)
+{
+	return true;
+}
+
 void generateCircuits(int no_units, int no_circuits, int** parents)
 {
 	int valid_count = 0;
