@@ -2,6 +2,7 @@
 #include <cmath>
 #include <time.h>
 #include <iostream>
+#include <cstdlib>
 #include "CUnit.h"
 #include "CCircuit.h"
 
