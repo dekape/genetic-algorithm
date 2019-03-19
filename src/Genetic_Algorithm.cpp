@@ -4,8 +4,8 @@ using namespace std;
 
 void intArrayToUnits(int *int_array, CUnit *circuit, int no_units)
 {
-    for(int i=1;i < no_units*2 + 1; i+=2){
-		//cout << i << endl;
+    for(int i = 1; i < no_units*2; i+=2)
+	{
         circuit[i/2].conc_num = int_array[i];
         circuit[i/2].tails_num = int_array[i + 1];
 		circuit[i / 2].id = i / 2;
@@ -59,12 +59,14 @@ void generateCircuits(int no_units, int no_circuits, CCircuit* parents)
 	int valid_count = 0;
 	srand(time(NULL));
 	int* circuit_array = new int[2 * no_units + 1];
-	int indexConsenOut = 1 + 2 * (rand() % no_units);
-	int indexTailingOut = 1 + (2 * (rand() % no_units) + 1);
+	int indexConsenOut;
+	int indexTailingOut;
 	CCircuit Circuit(no_units);
 
 	do
 	{
+		indexConsenOut = 1 + 2 * (rand() % no_units);
+		indexTailingOut = 1 + (2 * (rand() % no_units) + 1);
 		for (int i = 0; i < 2 * no_units + 1; i++)
 		{
 			if (i == indexConsenOut) circuit_array[i] = 10;
@@ -80,7 +82,7 @@ void generateCircuits(int no_units, int no_circuits, CCircuit* parents)
 		if (checkValidity(Circuit))	// CHECK VALIDITY HERE!!
 		{
 			// Add circuit to parents grid
-			parents[valid_count] = Circuit;
+			parents[valid_count] = CCircuit(no_units, Circuit.circuit_ints);
 
 			// Increment number of valid circuits
 			valid_count++;

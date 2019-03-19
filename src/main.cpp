@@ -27,7 +27,14 @@ int main(int argc, char * argv[])
 	parents = new CCircuit[no_circuits];
 	for (int i = 0; i < no_circuits; i++) parents[i].initialise(no_units);
 	generateCircuits(no_units, no_circuits, parents);
-
+	for (int i = 0; i < no_circuits; i++)
+	{
+		for (int j = 0; j < 2 * no_units + 1; j++)
+		{
+			cout << parents[i].circuit_ints[j] << " ";
+		}
+		cout << endl;
+	}
 
 	bool terminate = false;
 	while (!terminate)
@@ -54,7 +61,7 @@ int main(int argc, char * argv[])
 		
 		// Update iteration, check for termination
 		iter_count++;
-		cout << iter_count << endl;
+		cout << "Iteration: " << iter_count << endl;
 		terminate = true;
 	}
 
@@ -62,7 +69,7 @@ int main(int argc, char * argv[])
 
 
 	// Delete dynamically allocated memory
-	delete[] parents;
+	//delete[] parents;
 	//delete[] offsprings;
 	//delete[] fitness;
 	//delete[] best_circuit;
