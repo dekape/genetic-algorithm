@@ -5,8 +5,8 @@ class CStream {
 public:
 	// Proportions - how much of this stream's mass is
 	// concentrate vs tail
-	double conc;
-	double tail;
+	double value;
+	double waste;
 
 	CStream();
 

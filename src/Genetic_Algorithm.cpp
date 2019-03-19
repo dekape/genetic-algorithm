@@ -6,7 +6,7 @@ void intArrayToUnits(int *int_array, CUnit *circuit, int no_units)
 {
     for(int i=1;i<no_units*2 + 1;i+=2){
         circuit[i/2].conc_num = int_array[i];
-        circuit[i/2].tails_num = int_array[i + 1];
+        circuit[i/2].tail_num = int_array[i + 1];
     }
 }
 
@@ -18,7 +18,7 @@ void unitsToIntArray(int *int_array, CUnit *units_to_convert, int no_units)
 	for (int i = 1; i < no_units * 2 + 1; i += 2)
 	{
 		int_array[i] = units_to_convert[i / 2].conc_num;
-		int_array[i + 1] = units_to_convert[i / 2].tails_num;
+		int_array[i + 1] = units_to_convert[i / 2].tail_num;
 	}
 }
 
@@ -127,22 +127,32 @@ void crossOver(int *circuitA, int *circuitB, int no_units)
 }
 
 
-void mutate(int *circuit, int no_unit)
+void mutate(int *circuit, int no_unit, double mute_limit)
 {
 	double mute_rate; //come out a random rate
 
-	double mute_limit = 0.01; //mutation probability
+	//double mute_limit = 0.01; //mutation probability
 
 	for (int i = 0; i < 2 * no_unit + 1; i++)
 	{
 		mute_rate = ((double)rand()) / RAND_MAX;
+
 		if (mute_rate <= mute_limit && i != 0)
 		{
-			circuit[i] = (circuit[i] + no_unit + 2 + rand() % (no_unit + 2)) % (no_unit + 2);
+			int temp = circuit[i];
+			do
+			{
+				circuit[i] = (circuit[i] + no_unit + 2 + rand() % (no_unit + 2)) % (no_unit + 2);
+			} while (temp == circuit[i]);
+
 		}
 		else if (mute_rate <= mute_limit && i == 0)
 		{
-			circuit[i] = (circuit[i] + no_unit + rand() % no_unit) % no_unit;
+			int temp = circuit[i];
+			do
+			{
+				circuit[i] = (circuit[i] + no_unit + rand() % no_unit) % no_unit;
+			} while (temp == circuit[i]);
 		}
 	}
 }
