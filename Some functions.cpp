@@ -1,78 +1,56 @@
 //some functions
-bool checkValidity(int* circuit, int id_feed, int no_units)
-{
-	return true;
-}
 
-void generateCircuits(int no_units, int no_circuits, int** parents)
+void crossOver(int *circuitA, int *circuitB, int no_unit, int swap_limit)
 {
-	int valid_count = 0;
-	srand(time(NULL));
-	int* circuit = new int[2 * no_units + 1];
-	int indexConsenOut = 1 + 2 * (rand() % no_units);
-	int indexTailingOut = 1 + (2 * (rand() % no_units) + 1);
+	double swap_rate = ((double)rand()) / RAND_MAX;
 
-	do
+	if (swap_rate > (1 - swap_limit))
 	{
-		for (int i = 0; i < 2 * no_units + 1; i++)
+		int index = 1 + rand() % (2 * no_unit - 1);
+		for (int i = index; i < 2 * no_unit + 1; i++)
 		{
-			if (i == indexConsenOut) circuit[i] = 10;
-			else if (i == indexTailingOut) circuit[i] = 11;
-			else circuit[i] = rand() % no_units;
+			int temp = circuitA[i];
+			circuitA[i] = circuitB[i];
+			circuitB[i] = temp;
 		}
-
-		if (checkValidity(circuit, no_units))
-		{
-			// Add circuit to parents grid as Unit object
-			for (int i = 0; i < 2 * no_units + 1; i++)
-			{
-				//cout << parents[0][0].id << endl;
-				parents[valid_count][i] = circuit[i];
-			}
-
-			// Increment number of valid circuits
-			valid_count++;
-		}
-	} while (valid_count < no_circuits);
-
-}
-
-void crossOver(int *circuitA, int *circuitB)
-{
-	int index = 1 + rand() % (2 * no_unit - 1);
-	for (int i = index; i < 2 * no_unit + 1; i++)
-	{
-		int temp = circuitA[i];
-		circuitA[i] = circuitB[i];
-		circuitB[i] = temp;
 	}
 }
 
-void mutate(int *circuit, int no_unit)
+void mutate(int *circuit, int no_unit, double mute_limit)
 {
 	double mute_rate; //come out a random rate
 
-	double mute_limit = 0.01; //mutation probability
+	//double mute_limit = 0.01; //mutation probability
 
 	for (int i = 0; i < 2 * no_unit + 1; i++)
 	{
 		mute_rate = ((double)rand()) / RAND_MAX;
+
 		if (mute_rate <= mute_limit && i != 0)
 		{
-			circuit[i] = (circuit[i] + no_unit + 2 + rand() % (no_unit + 2)) % (no_unit + 2);
+			int temp = circuit[i];
+			do
+			{
+				circuit[i] = (circuit[i] + no_unit + 2 + rand() % (no_unit + 2)) % (no_unit + 2);
+			} while (temp == circuit[i]);
+
 		}
 		else if (mute_rate <= mute_limit && i == 0)
 		{
-			circuit[i] = (circuit[i] + no_unit + rand() % no_unit) % no_unit;
+			int temp = circuit[i];
+			do
+			{
+				circuit[i] = (circuit[i] + no_unit + rand() % no_unit) % no_unit;
+			} while (temp == circuit[i]);
 		}
 	}
 }
 
 void pairParents(int ** circuits, int * parentA, int * parentB, int no_units, int no_circuits, double* fitness)
 {
-	double totalFitness; //total fitness after fix
-	double index1 = -1; //index for parentA
-	double index2 = -1; //index for parentB
+	double totalFitness = 0; //total fitness after fix
+	int index1 = -1; //index for parentA
+	int index2 = -1; //index for parentB
 
 	int min_fit = 0; //compensation number to make sure all fitness numbers are larger than 0
 	for (int i = 0; i < no_circuits; i++)
@@ -100,14 +78,14 @@ void pairParents(int ** circuits, int * parentA, int * parentB, int no_units, in
 		if (fitnessRef >= refNum1)
 		{
 			index1 = i;
-			break
+			break;
 		}
 	}
 	fitnessRef = 0; //clear the fitness reference
 
 	do
 	{
-		ref2 = ((double)rand()) / RAND_MAX; //get another random number
+		double ref2 = ((double)rand()) / RAND_MAX; //get another random number
 		double refNum2 = ref2 * totalFitness;
 
 		for (int i = 1; i < no_circuits; i++)
@@ -119,7 +97,7 @@ void pairParents(int ** circuits, int * parentA, int * parentB, int no_units, in
 				{
 					index2 = i;
 				}
-				break //if it is equal, break anyways
+				break; //if it is equal, break anyways
 			}
 		}
 	} while (index2 == -1);
@@ -131,31 +109,35 @@ void pairParents(int ** circuits, int * parentA, int * parentB, int no_units, in
 	}
 }
 
-void createOffsprings(int ** parents, int ** children, int * parentA, int * parentB, int no_units, int no_circuits, double* fitness)
+void createOffsprings(int ** parents, int ** children, int no_units, int no_circuits, double mute_limit, double* fitness)
 {
 	int num = 0;
+	int* parentA = new int[2 * no_units + 1];
+	int* parentB = new int[2 * no_units + 1];
 	do
 	{
 		pairParents(parents, parentA, parentB, no_units, no_circuits, fitness);
-		crossOver(parentA, parentB);
-		mutate(parentA, no_units);
-		mutate(parentB, no_units);
-		if (checkValidity(parentA, parentA[0], no_units))
+		crossOver(parentA, parentB, no_units);
+		mutate(parentA, no_units, mute_limit);
+		mutate(parentB, no_units, mute_limit);
+		if (true)
 		{
 			for (int i = 0; i < 2 * no_units + 1; i++) //assign it
 			{
 				children[num][i] = parentA[i];
-				num++;
 			}
+			num++;
 		}
 
-		if (checkValidity(parentB, parentB[0], no_units))
+		if (true)
 		{
 			for (int i = 0; i < 2 * no_units + 1; i++) //assign it
 			{
 				children[num][i] = parentB[i];
-				num++;
 			}
+			num++;
 		}
 	} while (num < no_circuits);
+	delete[] parentA;
+	delete[] parentB;
 }
