@@ -168,6 +168,7 @@ bool checkValidity(CCircuit circuit)
 
 
 
+
 // CIRCUIT MODELLING TEAM CODE BELOW //
 
 void unitArrayToVector(CUnit *unit_array, vector<CUnit> &unit_vector, int num_units) {
@@ -222,7 +223,6 @@ double assess_fitness(vector<CUnit> &circuit) {
 
 	return fitness_score;
 }
-
 
 
 bool allUnitsMarked(vector<CUnit> &circuit) {
