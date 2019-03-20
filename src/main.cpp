@@ -8,11 +8,11 @@
 
 using namespace std;
 
-int iter_max = 1000;							// max number of iterations
+int iter_max = 5000;							// max number of iterations
 int p_crossing = 0.9;						// probability of crossing over
 int p_mutation = 0.001;						// probability of mutation
-int no_units = 5;							// total number of units
-int no_circuits = 10;						// total number of initial circuits
+int no_units = 10;							// total number of units
+int no_circuits = 100;						// total number of initial circuits
 int iter_count = 0;							// iterations counter
 int offspring_count = 0;					// offsprings per iterations counter
 int best_count = 0;
