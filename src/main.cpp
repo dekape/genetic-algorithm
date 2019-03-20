@@ -11,7 +11,7 @@ int no_offsprings = 2;						// number of offsprings per generation
 int p_crossing = 0.9;						// probability of crossing over
 int p_mutation = 0.001;						// probability of mutation
 int no_units = 10;							// total number of units
-int no_circuits = 100;						// total number of initial circuits
+int no_circuits = 10;						// total number of initial circuits
 int iter_count = 0;							// iterations counter
 int offspring_count = 0;					// offsprings per iterations counter
 double* fitness;							// list to store the fitness values of all circuits
