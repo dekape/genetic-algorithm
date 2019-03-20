@@ -8,15 +8,16 @@
 
 using namespace std;
 
-int iter_max = 2;							// max number of iterations
-double p_crossing = 1;						// probability of crossing over
-double p_mutation = 1;						// probability of mutation
+int iter_max = 1;							// max number of iterations
+double p_crossing = 0.9;						// probability of crossing over
+double p_mutation = 0.001;						// probability of mutation
 int no_units = 10;							// total number of units
 int no_circuits = 100;						// total number of initial circuits
 int iter_count = 0;							// iterations counter
 int offspring_count = 0;					// offsprings per iterations counter
 int best_count = 0;
 double* fitness;							// list to store the fitness values of all circuits
+double* fitness_adjusted;					
 CCircuit* parents;							// 2D array to store all parent circuits
 CCircuit* offsprings;						// 2D array to store all offspring circuits
 CCircuit best_circuit(no_units);			// object to store best circuit based on fitness calculation
@@ -95,8 +96,11 @@ int main(int argc, char * argv[])
 	bool terminate = false;
 	best_circuit_prev = parents[0];
 	fitness = new double[no_circuits];
+	fitness_adjusted = new double[no_circuits];
+	double totalFitness;
 	while (!terminate)
 	{	
+		cout << "Iteration: " << iter_count << endl;
 #ifdef DEBUG
 		cout << "PARENTS" << endl;
 		for (int i = 0; i < no_circuits; i++)
@@ -109,7 +113,6 @@ int main(int argc, char * argv[])
 		for (int i = 0; i < no_circuits; i++)
 		{
 			fitness[i] = balance_mass(parents[i], 1e-6);
-			cout << fitness[i] << " ";
  		}
 #ifdef DEBUG
 		cout << "FITNESS:" << endl;
@@ -124,7 +127,6 @@ int main(int argc, char * argv[])
 		//// Store highest fitness as offspring
 		selectBestCircuit(parents, fitness, best_circuit, no_circuits, no_units);
 		offsprings[0] = best_circuit;
-		cout << "HEEEEY " << balance_mass(best_circuit, 1e-6) << endl << endl;
 		//best_circuit.printCircuit();
 		offspring_count++;
 #ifdef DEBUG
@@ -136,8 +138,11 @@ int main(int argc, char * argv[])
 		// While number of offsprings is less than number of parents
 		while (offspring_count < no_circuits)
 		{
+			// Regulate fitness to all positive numbers
+			totalFitness = adjustFitness(fitness, fitness_adjusted, no_circuits);
+
 			// Create offsprings from two random parents (with mutation and crossover) -- check if valid and store in grid
-			createOffsprings(parents, offspringA, offspringB, no_units, no_circuits, p_mutation, fitness, p_crossing);
+			createOffsprings(parents, offspringA, offspringB, no_units, no_circuits, p_mutation, fitness, p_crossing, totalFitness);
 			if (checkValidity(offspringA) && offspring_count != no_circuits)
 			{
 				offsprings[offspring_count] = offspringA;
@@ -163,12 +168,11 @@ int main(int argc, char * argv[])
 		
 		// Update iteration
 		iter_count++;
-		cout << "Iteration: " << iter_count << endl;
-		// for(int i = 0; i < no_circuits; i++)
-		// {
-		// 	cout << fitness[i] << " ";
-		// }
-		// cout << endl << endl;
+		for(int i = 0; i < no_circuits; i++)
+		{
+			cout << fitness[i] << " ";
+		}
+		cout << endl << endl;
 		//offsprings[0].printCircuit();
 		//printf("Fitness %f \n\n", balance_mass(best_circuit, 1e-6));
 
