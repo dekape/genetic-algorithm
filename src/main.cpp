@@ -4,14 +4,15 @@
 #include "CUnit.h"
 #include "CCircuit.h"
 #include "CStream.h"
+#define DEBUG
 
 using namespace std;
 
-int no_offsprings = 2;						// number of offsprings per generation
+int iter_max = 2;							// max number of iterations
 int p_crossing = 0.9;						// probability of crossing over
 int p_mutation = 0.001;						// probability of mutation
 int no_units = 10;							// total number of units
-int no_circuits = 100;						// total number of initial circuits
+int no_circuits = 10;						// total number of initial circuits
 int iter_count = 0;							// iterations counter
 int offspring_count = 0;					// offsprings per iterations counter
 double* fitness;							// list to store the fitness values of all circuits
@@ -31,64 +32,86 @@ int main(int argc, char * argv[])
 		parents[i].initialise(no_units);
 		offsprings[i].initialise(no_units);
 	}
-	
+
 	// Generate random valid circuits, store in parents
 	generateCircuits(no_units, no_circuits, parents);
-	cout << "PARENTS" << endl;
-	for (int i = 0; i < no_circuits; i++)
-		parents[i].printCircuit();
 
 	bool terminate = false;
 	fitness = new double[no_circuits];
 	while (!terminate)
-	{	
+	{
+#ifdef DEBUG
+		cout << "PARENTS" << endl;
+		for (int i = 0; i < no_circuits; i++)
+			parents[i].printCircuit();
+#endif //!DEBUG
+
+
 		// Calculate fitness of all circuits
 		//computeFitness(parents, fitness, no_circuits);
+#ifdef DEBUG
+		cout << "FITNESS:" << endl;
 		for (int i = 0; i < no_circuits; i++)
+		{
 			fitness[i] = rand() % 150;
+			cout << fitness[i] << " ";
+		}
+		cout << endl;
+#endif //!DEBUG
 
 
 		//// Store highest fitness as offspring
 		selectBestCircuit(parents, fitness, best_circuit, no_circuits, no_units);
 		offsprings[0] = best_circuit;
 		offspring_count++;
+#ifdef DEBUG
+		cout << "BEST CIRCUIT" << endl;
+		best_circuit.printCircuit();
+#endif // DEBUG
+
 
 		// While number of offsprings is less than number of parents
-		//while (offspring_count < no_circuits)
-		//{
-		// Create offsprings from two random parents (with mutation and crossover) -- check if valid
-		createOffsprings(parents, offsprings, no_units, no_circuits, p_mutation, fitness);
-		
+		CCircuit offspringA, offspringB;
+		while (offspring_count < no_circuits)
+		{
+			// Create offsprings from two random parents (with mutation and crossover) -- check if valid and store in grid
+			createOffsprings(parents, offspringA, offspringB, no_units, no_circuits, p_mutation, p_crossing, fitness);
+			if (checkValidity(offspringA) && offspring_count != no_circuits)
+			{
+				offsprings[offspring_count] = offspringA;
+				offspring_count++;
+			}
+			if (checkValidity(offspringB) && offspring_count != no_circuits)
+			{
+				offsprings[offspring_count] = offspringB;
+				offspring_count++;
+			}
+		}
+#ifdef DEBUG
 		cout << "OFFSPRINGS" << endl;
 		for (int i = 0; i < no_circuits; i++)
 		{
 			offsprings[i].printCircuit();
 		}
+#endif // DEBUG
 
-		//
-		//	// Store offsprings in offsprings grid, check if not overflowing
-		//	offspring_count += 2;
-		//}
-
-	
 		// Swap offsprings with parents
+		swapGrids(parents, offsprings, no_circuits);
 
-		
 		// Update iteration
 		iter_count++;
 		cout << "Iteration: " << iter_count << endl;
 
 		// Evaluate termination
-		terminate = true;
+		if (iter_count == iter_max) terminate = true;
 	}
 
 
 
 	// Delete dynamically allocated memory
 	delete[] parents;
-	//delete[] offsprings;
-	//delete[] fitness;
-	//delete[] best_circuit;
+	delete[] offsprings;
+	delete[] fitness;
 
 	system("pause");
 	return 0;

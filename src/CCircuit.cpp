@@ -24,7 +24,6 @@ CCircuit::CCircuit(int no_units)
 	this->circuit_ints = new int[2*no_units + 1];
 	this->circuit_units = new CUnit[no_units];
 }
-
 CCircuit::CCircuit(int no_units, int* circuit_array)
 {
 	this->feed_id = circuit_array[0];

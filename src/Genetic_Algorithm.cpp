@@ -45,7 +45,7 @@ void selectBestCircuit(CCircuit* circuits, double* fitness, CCircuit& best_circu
 	{
 		if (fitness[i] > max_fit)
 		{
-			fitness[i] = max_fit;
+			max_fit = fitness[i];
 			i_max = i;
 		}
 	}
@@ -69,8 +69,8 @@ void generateCircuits(int no_units, int no_circuits, CCircuit* parents)
 		indexTailingOut = 1 + (2 * (rand() % no_units) + 1);
 		for (int i = 0; i < 2 * no_units + 1; i++)
 		{
-			if (i == indexConsenOut) circuit_array[i] = 10;
-			else if (i == indexTailingOut) circuit_array[i] = 11;
+			if (i == indexConsenOut) circuit_array[i] = no_units;
+			else if (i == indexTailingOut) circuit_array[i] = no_units + 1;
 			else circuit_array[i] = rand() % no_units;
 		}
 
@@ -93,13 +93,13 @@ void generateCircuits(int no_units, int no_circuits, CCircuit* parents)
 }
 
 
-void crossOver(int *circuitA, int *circuitB, int no_unit, double cross_limit)
+void crossOver(int *circuitA, int *circuitB, int no_unit, double swap_limit)
 {
     //a random number between 0 - 1, will be use to determine if the gene will crossover or not.
-    double cross_rate = ((double)rand()) / RAND_MAX;
-    
-    if(cross_rate <= cross_limit){ // will cross over
-        //get a random index as a starting index for crossover.
+    double swap_rate = ((double)rand()) / RAND_MAX;
+    //will cross over get a random index as a starting index for crossover.
+    if (swap_rate <= swap_limit)
+    {
         int index = 1 + rand() % (2 * no_unit - 1);
         for (int i = index; i < 2 * no_unit + 1; i++)
         {
@@ -166,7 +166,6 @@ void pairParents(CCircuit *circuits, CCircuit &parentA, CCircuit &parentB, int n
 	double ref1 = ((double)rand()) / RAND_MAX; //get a random number within the range of totalFitness
 	double refNum1 = ref1 * totalFitness;
 	double fitnessRef = 0; //use a reference number to get the index
-	int* fitnessind = new int[int(totalFitness)];
 
 	for (int i = 0; i < no_circuits; i++) //get the index from the random number
 	{
@@ -204,141 +203,24 @@ void pairParents(CCircuit *circuits, CCircuit &parentA, CCircuit &parentB, int n
 }
 
 
-void createOffsprings(CCircuit* parents, CCircuit* children, int no_circuits, double mute_limit, double cross_limit, double* fitness)
+void createOffsprings(CCircuit* parents, CCircuit& childA, CCircuit& childB, int no_units, int no_circuits, double mute_limit, double swap_limit, double* fitness)
 {
-	int offspring_count = 0;
-    int no_units = (*parents).no_units;
 	CCircuit parentA (no_units);
 	CCircuit parentB (no_units);
-	do
-	{
-		pairParents(parents, parentA, parentB, no_units, no_circuits, fitness);
-		crossOver(parentA.circuit_ints, parentB.circuit_ints, no_units, cross_limit);
-		mutate(parentA.circuit_ints, no_units, mute_limit);
-		mutate(parentB.circuit_ints, no_units, mute_limit);
-		if (checkValidity(parentA))
-		{
-			children[offspring_count] = parentA;
-			offspring_count++;
-		}
 
-		if (checkValidity(parentB))
-		{
-			children[offspring_count] = parentB;
-			offspring_count++;
-		}
-	} while (offspring_count < no_circuits);
+	pairParents(parents, parentA, parentB, no_units, no_circuits, fitness);
+	crossOver(parentA.circuit_ints, parentB.circuit_ints, no_units, swap_limit);
+	mutate(parentA.circuit_ints, no_units, mute_limit);
+	mutate(parentB.circuit_ints, no_units, mute_limit);
 
+	childA = parentA;
+	childB = parentB;
 }
 
-
-/*
-void crossOver(int *circuitA, int *circuitB, int no_units)
+void swapGrids(CCircuit* parents, CCircuit* offsprings, int no_circuits)
 {
-	int index = 1 + rand() % (2 * no_units - 1);
-	for (int i = index; i < 2 * no_units + 1; i++)
-	{
-		int temp = circuitA[i];
-		circuitA[i] = circuitB[i];
-		circuitB[i] = temp;
-	}
+    for (int i = 0; i < no_circuits; i++)
+    {
+        parents[i] = offsprings[i];
+    }
 }
-
-
-void mutate(int *circuit, int no_unit, double mute_limit)
-{
-	double mute_rate; //come out a random rate
-
-	//double mute_limit = 0.01; //mutation probability
-
-	for (int i = 0; i < 2 * no_unit + 1; i++)
-	{
-		mute_rate = ((double)rand()) / RAND_MAX;
-
-		if (mute_rate <= mute_limit && i != 0)
-		{
-			int temp = circuit[i];
-			do
-			{
-				circuit[i] = (circuit[i] + no_unit + 2 + rand() % (no_unit + 2)) % (no_unit + 2);
-			} while (temp == circuit[i]);
-
-		}
-		else if (mute_rate <= mute_limit && i == 0)
-		{
-			int temp = circuit[i];
-			do
-			{
-				circuit[i] = (circuit[i] + no_unit + rand() % no_unit) % no_unit;
-			} while (temp == circuit[i]);
-		}
-	}
-}
-
-
-void pairParents(int ** circuits, int * parentA, int * parentB, int no_units, int no_circuits, double* fitness)
-{
-	double totalFitness;	//total fitness after fix
-	int index1 = -1;		//index for parentA
-	int index2 = -1;		//index for parentB
-	double ref1, ref2;
-
-	int min_fit = 0; //compensation number to make sure all fitness numbers are larger than 0
-	for (int i = 0; i < no_circuits; i++)
-	{
-		if (fitness[i] < min_fit)
-		{
-			min_fit = fitness[i]; //!!!!!!!
-		}
-	}
-
-	totalFitness = 0;
-	for (int i = 0; i < no_circuits; i++) //fix the fitness array and calculate the totalFitness
-	{
-		fitness[i] -= min_fit;
-		totalFitness += fitness[i];
-	}
-
-	ref1 = ((double)rand()) / RAND_MAX; //get a random number within the range of totalFitness
-	double refNum1 = ref1 * totalFitness;
-	double fitnessRef = 0; //use a reference number to get the index
-	int* fitnessind = new int[int(totalFitness)];
-
-	for (int i = 0; i < no_circuits; i++) //get the index from the random number
-	{
-		fitnessRef += fitness[i];
-		if (fitnessRef >= refNum1)
-		{
-			index1 = i;
-			break;
-		}
-	}
-	fitnessRef = 0; //clear the fitness reference
-
-	do
-	{
-		ref2 = ((double)rand()) / RAND_MAX; //get another random number
-		double refNum2 = ref2 * totalFitness;
-
-		for (int i = 1; i < no_circuits; i++)
-		{
-			fitnessRef += fitness[i];
-			if (fitnessRef >= refNum2)
-			{
-				if (index1 != i) //make sure it's not equal to parentA
-				{
-					index2 = i;
-				}
-				break; //if it is equal, break anyways
-			}
-		}
-	} while (index2 == -1);
-
-	for (int i = 0; i < 2 * no_units + 1; i++) //assign it to the pointer of parentA and B
-	{
-		parentA[i] = circuits[index1][i];
-		parentB[i] = circuits[index2][i];
-	}
-}
-
-*/
