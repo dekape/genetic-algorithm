@@ -18,8 +18,6 @@
 
      int no_units = 3;
      int no_circuits = 10;
-     double mute_limit = 0.01;
-     double swap_limit = 0.01;
 
      CCircuit * parents, * children;
      parents = new CCircuit[no_circuits];
