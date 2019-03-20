@@ -47,12 +47,6 @@ public:
 };
 
 
-double assess_fitness(vector<CUnit> &circuit);
-
-bool allUnitsMarked(vector<CUnit> &circuit);
-
-bool checkValidity(int *int_array, CUnit *circuit, int no_units);
-
 void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int num_units);
 
 void resetMarks(CUnit *units, int no_units);
@@ -60,10 +54,6 @@ void resetMarks(CUnit *units, int no_units);
 void unitArrayToVector(CUnit *unit_array, vector<CUnit> &unit_vector, int num_units);
 
 double balance_mass(CCircuit circuit, double tol);
-
-void cal_convergence_value(vector<CUnit> &circuit, double value_c, double waste_c);
-
-void do_unit_cal(int unit_index, vector<CUnit> &circuit);
 
 
 #endif // !CCIRCUIT_H

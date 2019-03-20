@@ -38,16 +38,16 @@ CCircuit::CCircuit(int no_units, int* circuit_array)
 	intArrayToUnits(circuit_array, this->circuit_units, no_units);
 }
 
-//CCircuit::CCircuit(int no_units, int feed, CUnit* circuit_array)
-//{
-//	this->feed_id = feed;
-//	this->no_units = no_units;
-//	this->circuit_units = new CUnit[no_units];
-//	for (int i = 0; i < no_units; i++)
-//		this->circuit_units[i] = circuit_array[i];
-//	this->circuit_ints = new int[2 * no_units + 1];
-//	unitsToIntArray(this->circuit_ints, feed, circuit_array, no_units);
-//}
+CCircuit::CCircuit(int no_units, int feed, CUnit* circuit_array)
+{
+	this->feed_id = feed;
+	this->no_units = no_units;
+	this->circuit_units = new CUnit[no_units];
+	for (int i = 0; i < no_units; i++)
+		this->circuit_units[i] = circuit_array[i];
+	this->circuit_ints = new int[2 * no_units + 1];
+	//unitsToIntArray(this->circuit_ints, feed, circuit_array, no_units);
+}
 
 CCircuit::~CCircuit()
 {
