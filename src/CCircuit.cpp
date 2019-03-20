@@ -291,8 +291,6 @@ double balance_mass(CCircuit circuit_obj, double tol) {
 		max_total_change = max(max_value_change, max_waste_change);
 
 	}
-	printf("\n Number of iterations: %d", num_iterations);
-
 	// Important values for circuit
 	double circuit_value = 0;
 	double circuit_waste = 0;
