@@ -7,7 +7,7 @@
 
 using namespace std;
 
-double assess_fitness(vector<CUnit> &circuit);
+double assessFitness(double gormanium_mass, double waste_mass);
 
 bool allUnitsMarked(vector<CUnit> &circuit);
 
@@ -18,15 +18,6 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int
 void resetMarks(CUnit *units, int no_units);
 //vector<double> balanceMass(vector<CUnit> &circuit);
 
-double balance_mass(vector<CUnit> &circuit, double tol);
-
-void do_unit_cal(int unit_index, vector<CUnit> &circuit);
-
-void unitArrayToVector(CUnit *unit_array, vector<CUnit> &unit_vector, int num_units);
-
-double balance_mass(vector<CUnit> &circuit, double tol);
-
-void do_unit_cal(int unit_index, vector<CUnit> &circuit);
-
 
 #endif // !CCIRCUIT_H
+
