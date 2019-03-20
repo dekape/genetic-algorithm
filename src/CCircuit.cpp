@@ -12,7 +12,7 @@ CCircuit::CCircuit()
 void CCircuit::initialise(int no_units)
 {
 	this->feed_id = -1;
-	this->no_units = -1;
+	this->no_units = no_units;
 	this->circuit_ints = new int[2 * no_units + 1];
 	this->circuit_units = new CUnit[no_units];
 }
@@ -20,7 +20,7 @@ void CCircuit::initialise(int no_units)
 CCircuit::CCircuit(int no_units)
 {
 	this->feed_id = -1;
-	this->no_units = -1;
+	this->no_units = no_units;
 	this->circuit_ints = new int[2*no_units + 1];
 	this->circuit_units = new CUnit[no_units];
 }
@@ -28,10 +28,10 @@ CCircuit::CCircuit(int no_units, int* circuit_array)
 {
 	this->feed_id = circuit_array[0];
 	this->no_units = no_units;
-	this->circuit_ints = new int[2 * no_units + 1];
+	if (circuit_ints == nullptr) this->circuit_ints = new int[2 * no_units + 1];
 	for (int i = 0; i < 2 * no_units + 1; i++)
 		this->circuit_ints[i] = circuit_array[i];
-	this->circuit_units = new CUnit[no_units];
+	if (circuit_units == nullptr) this->circuit_units = new CUnit[no_units];
 	intArrayToUnits(circuit_array, this->circuit_units, no_units);
 }
 
@@ -290,8 +290,6 @@ double balance_mass(CCircuit circuit_obj, double tol) {
 		max_total_change = max(max_value_change, max_waste_change);
 
 	}
-	printf("\n Number of iterations: %d", num_iterations);
-
 	// Important values for circuit
 	double circuit_value = 0;
 	double circuit_waste = 0;

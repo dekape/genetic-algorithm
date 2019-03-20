@@ -15,6 +15,7 @@ public:
 	// Operator overloads to help calculations later
 	CStream operator+(CStream &rhs);
 	CStream &operator+=(CStream &rhs);
+	CStream &operator=(CStream &rhs);
 };
 
 
