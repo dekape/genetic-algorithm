@@ -93,15 +93,21 @@ void generateCircuits(int no_units, int no_circuits, CCircuit* parents)
 }
 
 
-void crossOver(int *circuitA, int *circuitB, int no_unit)
+void crossOver(int *circuitA, int *circuitB, int no_unit, double cross_limit)
 {
-	int index = 1 + rand() % (2 * no_unit - 1);
-	for (int i = index; i < 2 * no_unit + 1; i++)
-	{
-		int temp = circuitA[i];
-		circuitA[i] = circuitB[i];
-		circuitB[i] = temp;
-	}
+    //a random number between 0 - 1, will be use to determine if the gene will crossover or not.
+    double cross_rate = ((double)rand()) / RAND_MAX;
+    
+    if(cross_rate <= cross_limit){ // will cross over
+        //get a random index as a starting index for crossover.
+        int index = 1 + rand() % (2 * no_unit - 1);
+        for (int i = index; i < 2 * no_unit + 1; i++)
+        {
+            int temp = circuitA[i];
+            circuitA[i] = circuitB[i];
+            circuitB[i] = temp;
+        }
+    }
 }
 
 
@@ -198,15 +204,16 @@ void pairParents(CCircuit *circuits, CCircuit &parentA, CCircuit &parentB, int n
 }
 
 
-void createOffsprings(CCircuit* parents, CCircuit* children, int no_units, int no_circuits, double mute_limit, double* fitness)
+void createOffsprings(CCircuit* parents, CCircuit* children, int no_circuits, double mute_limit, double cross_limit, double* fitness)
 {
 	int offspring_count = 0;
+    int no_units = (*parents).no_units;
 	CCircuit parentA (no_units);
 	CCircuit parentB (no_units);
 	do
 	{
 		pairParents(parents, parentA, parentB, no_units, no_circuits, fitness);
-		crossOver(parentA.circuit_ints, parentB.circuit_ints, no_units);
+		crossOver(parentA.circuit_ints, parentB.circuit_ints, no_units, cross_limit);
 		mutate(parentA.circuit_ints, no_units, mute_limit);
 		mutate(parentB.circuit_ints, no_units, mute_limit);
 		if (checkValidity(parentA))

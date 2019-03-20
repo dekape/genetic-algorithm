@@ -21,11 +21,11 @@ void computeFitness(CCircuit* parents, double*fitness, int no_circuits);
 
 void selectBestCircuit(CCircuit* circuits, double* fitness, CCircuit& best_circuit, int no_circuits, int no_units);
 
-void crossOver(int *circuitA, int *circuitB, int no_units);
+void crossOver(int *circuitA, int *circuitB, int no_unit, double cross_limit);
 
 void mutate(int *circuit, int no_unit, double mute_limit);
 
-void createOffsprings(CCircuit* parents, CCircuit* children, int no_units, int no_circuits, double mute_limit, double* fitness);
+void createOffsprings(CCircuit* parents, CCircuit* children, int no_circuits, double mute_limit, double cross_limit, double* fitness);
 
 
 #endif // !GENETIC_ALGORITHM_H

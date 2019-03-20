@@ -101,7 +101,7 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int
 		markUnits(units[unit_num].tail_num, units, conc_exit, tail_exit, num_units);
 	}
 	else {
-		if(units[unit_num].tails_num == num_units + 1)
+		if(units[unit_num].tail_num == num_units + 1)
 		tail_exit = true;
 		// ...Potentially do something to indicate that you have seen an exit
 	}
