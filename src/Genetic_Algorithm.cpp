@@ -143,15 +143,15 @@ void pairParents(CCircuit *circuits, CCircuit &parentA, CCircuit &parentB, int n
 	int index1 = -1; //index for parentA
 	int index2 = -1; //index for parentB
 
-	float min_fit = fitness[0]; //compensation number to make sure all fitness numbers are larger than 0
-	//find the lowest
-	for (int i = 0; i < no_circuits; i++)
+	int min_fit = fitness[0]; //compensation number to make sure all fitness numbers are larger than 0
+	for (int i = 1; i < no_circuits; i++)
 	{
 		if (fitness[i] < min_fit)
 		{
 			min_fit = fitness[i]; //!!!!!!!
 		}
 	}
+
 
 	for (int i = 0; i < no_circuits; i++) //fix the fitness array and calculate the totalFitness
 	{
@@ -161,7 +161,6 @@ void pairParents(CCircuit *circuits, CCircuit &parentA, CCircuit &parentB, int n
 	double ref1 = ((double)rand()) / RAND_MAX; //get a random number within the range of totalFitness
 	double refNum1 = ref1 * totalFitness;
 	double fitnessRef = 0; //use a reference number to get the index
-	int* fitnessind = new int[int(totalFitness)];
 
 	for (int i = 0; i < no_circuits; i++) //get the index from the random number
 	{
@@ -192,7 +191,7 @@ void pairParents(CCircuit *circuits, CCircuit &parentA, CCircuit &parentB, int n
 			}
 		}
 	} while (index2 == -1);
-
+ 
 	parentA = circuits[index1];
 	parentB = circuits[index2];
 
@@ -224,3 +223,33 @@ void swapGrids(CCircuit* parents, CCircuit* offsprings, int no_circuits)
 	}
 }
 
+/*
+void checkTermination(int iter_count, int** offspring, int convergence_limit)
+{
+	int count = 0;
+	int convergenceCount = 0;
+	int maxfitness = 0;
+	double* fitness[no_circuits];
+	do
+	{
+		for (int i = 0; i < no_circuits; i++)
+		{
+			fitness[i] = balance_mass(parents[i], tol = 1e-7);
+		}
+		createOffsprings(parents, children, no_units, no_circuits, mute_limit, swap_limit, fitness);
+		//Two ways 1. compare the fitness[0] each time 2. compare each elements of the first children
+		if (balance_mass(children[0], tol = 1e-7) > max_fitness)
+		{
+			max_fitness = balance_mass(children[0]);
+			convergenceCount = 1;
+		}
+		else if (fitness[0] == max_fitness)
+		{
+			convergenceCount++;
+		}
+		if (convergenceCount >= convergence_limit) break;
+		std::swap(parent, children);
+		count++
+	} while (count < iter_count);
+}
+*/
