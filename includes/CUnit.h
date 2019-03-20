@@ -9,12 +9,12 @@ public:
 	CUnit();
 	~CUnit();
 
-	CUnit(int id, int conc_num, int tails_num);
+	CUnit(int id, int conc_num, int tail_num);
 
 	//index of the unit to which this unit�s concentrate stream is connected 
 	int conc_num = -1;
 	//index of the unit to which this unit�s concentrate stream is connected 
-	int tails_num = -1;
+	int tail_num = -1;
 	//A Boolean that is changed to true if the unit has been seen 
 	bool mark = false;
 
@@ -24,6 +24,6 @@ public:
 	// Streams for the total input (old and new)
 	// and the two outputs (concentrate and tail)
 	CStream curr_in_feed, old_in_feed,
-		conc_out, tail_out;
+			conc, tail;
 };
 #endif // !CUNIT_H

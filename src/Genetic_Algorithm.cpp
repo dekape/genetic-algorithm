@@ -7,7 +7,7 @@ void intArrayToUnits(int *int_array, CUnit *circuit, int no_units)
     for(int i = 1; i < no_units*2; i+=2)
 	{
         circuit[i/2].conc_num = int_array[i];
-        circuit[i/2].tails_num = int_array[i + 1];
+        circuit[i/2].tail_num = int_array[i + 1];
 		circuit[i / 2].id = i / 2;
     }
 }
@@ -20,21 +20,24 @@ void unitsToIntArray(int *int_array, int feed_id, CUnit *units_to_convert, int n
 	for (int i = 1; i < no_units * 2 + 1; i += 2)
 	{
 		int_array[i] = units_to_convert[i / 2].conc_num;
-		int_array[i + 1] = units_to_convert[i / 2].tails_num;
+		int_array[i + 1] = units_to_convert[i / 2].tail_num;
 	}
 }
 
 
-void computeFitness(CUnit** circuits, double*fitness, int no_circuits)
+void computeFitness(CCircuit* parents, double* fitness, int no_circuits)
 {
 	for (int i = 0; i < no_circuits; i++)
 	{
-		fitness[i] = rand() % 100;
+		//cout << parents[i].circuit_units[0].curr_in_feed.value << " ";
+		fitness[i] = balance_mass(parents[i], 10e-7);
+		//cout << parents[i].circuit_units[0].curr_in_feed.value << " ";
+		cout << endl;
 	}
 }
 
 
-void selectBestCircuit(CUnit**circuits, double* fitness, CUnit* best_circuit, int no_circuits, int no_units)
+void selectBestCircuit(CCircuit* circuits, double* fitness, CCircuit& best_circuit, int no_circuits, int no_units)
 {
 	int max_fit = 0;
 	int i_max = 0;
@@ -42,15 +45,12 @@ void selectBestCircuit(CUnit**circuits, double* fitness, CUnit* best_circuit, in
 	{
 		if (fitness[i] > max_fit)
 		{
-			fitness[i] = max_fit;
+			max_fit = fitness[i];
 			i_max = i;
 		}
 	}
 
-	for (int i = 0; i < no_units; i++)
-	{
-		best_circuit[i] = circuits[i_max][i];
-	}
+	best_circuit = circuits[i_max];
 }
 
 
@@ -69,8 +69,8 @@ void generateCircuits(int no_units, int no_circuits, CCircuit* parents)
 		indexTailingOut = 1 + (2 * (rand() % no_units) + 1);
 		for (int i = 0; i < 2 * no_units + 1; i++)
 		{
-			if (i == indexConsenOut) circuit_array[i] = 10;
-			else if (i == indexTailingOut) circuit_array[i] = 11;
+			if (i == indexConsenOut) circuit_array[i] = no_units;
+			else if (i == indexTailingOut) circuit_array[i] = no_units + 1;
 			else circuit_array[i] = rand() % no_units;
 		}
 
@@ -79,7 +79,7 @@ void generateCircuits(int no_units, int no_circuits, CCircuit* parents)
 		Circuit.no_units = no_units;
 		intArrayToUnits(circuit_array, Circuit.circuit_units, no_units);
 
-		if (checkValidity(Circuit))	// CHECK VALIDITY HERE!!
+		if (checkValidity(Circuit))	// If valid circuit
 		{
 			// Add circuit to parents grid
 			parents[valid_count] = CCircuit(no_units, Circuit.circuit_ints);
@@ -87,16 +87,17 @@ void generateCircuits(int no_units, int no_circuits, CCircuit* parents)
 			// Increment number of valid circuits
 			valid_count++;
 		}
+		
 	} while (valid_count < no_circuits);
 
 	delete[] circuit_array;
 }
 
 
-void crossOver(int *circuitA, int *circuitB, int no_units)
+void crossOver(int *circuitA, int *circuitB, int no_unit)
 {
-	int index = 1 + rand() % (2 * no_units - 1);
-	for (int i = index; i < 2 * no_units + 1; i++)
+	int index = 1 + rand() % (2 * no_unit - 1);
+	for (int i = index; i < 2 * no_unit + 1; i++)
 	{
 		int temp = circuitA[i];
 		circuitA[i] = circuitB[i];
@@ -105,36 +106,45 @@ void crossOver(int *circuitA, int *circuitB, int no_units)
 }
 
 
-void mutate(int *circuit, int no_unit)
+void mutate(int *circuit, int no_unit, double mute_limit)
 {
 	double mute_rate; //come out a random rate
 
-	double mute_limit = 0.01; //mutation probability
+	//double mute_limit = 0.01; //mutation probability
 
 	for (int i = 0; i < 2 * no_unit + 1; i++)
 	{
 		mute_rate = ((double)rand()) / RAND_MAX;
+
 		if (mute_rate <= mute_limit && i != 0)
 		{
-			circuit[i] = (circuit[i] + no_unit + 2 + rand() % (no_unit + 2)) % (no_unit + 2);
+			int temp = circuit[i];
+			do
+			{
+				circuit[i] = (circuit[i] + no_unit + 2 + rand() % (no_unit + 2)) % (no_unit + 2);
+			} while (temp == circuit[i]);
+
 		}
 		else if (mute_rate <= mute_limit && i == 0)
 		{
-			circuit[i] = (circuit[i] + no_unit + rand() % no_unit) % no_unit;
+			int temp = circuit[i];
+			do
+			{
+				circuit[i] = (circuit[i] + no_unit + rand() % no_unit) % no_unit;
+			} while (temp == circuit[i]);
 		}
 	}
 }
 
 
-void pairParents(int ** circuits, int * parentA, int * parentB, int no_units, int no_circuits, double* fitness)
+void pairParents(CCircuit *circuits, CCircuit &parentA, CCircuit &parentB, int no_units, int no_circuits, double* fitness)
 {
-	double totalFitness;	//total fitness after fix
-	int index1 = -1;		//index for parentA
-	int index2 = -1;	//index for parentB
-	double ref1, ref2;
+	double totalFitness = 0; //total fitness after fix
+	int index1 = -1; //index for parentA
+	int index2 = -1; //index for parentB
 
-	int min_fit = 0; //compensation number to make sure all fitness numbers are larger than 0
-	for (int i = 0; i < no_circuits; i++)
+	int min_fit = fitness[0]; //compensation number to make sure all fitness numbers are larger than 0
+	for (int i = 1; i < no_circuits; i++)
 	{
 		if (fitness[i] < min_fit)
 		{
@@ -142,17 +152,15 @@ void pairParents(int ** circuits, int * parentA, int * parentB, int no_units, in
 		}
 	}
 
-	totalFitness = 0;
+
 	for (int i = 0; i < no_circuits; i++) //fix the fitness array and calculate the totalFitness
 	{
 		fitness[i] -= min_fit;
 		totalFitness += fitness[i];
 	}
-
-	ref1 = ((double)rand()) / RAND_MAX; //get a random number within the range of totalFitness
+	double ref1 = ((double)rand()) / RAND_MAX; //get a random number within the range of totalFitness
 	double refNum1 = ref1 * totalFitness;
 	double fitnessRef = 0; //use a reference number to get the index
-	int* fitnessind = new int[int(totalFitness)];
 
 	for (int i = 0; i < no_circuits; i++) //get the index from the random number
 	{
@@ -167,7 +175,7 @@ void pairParents(int ** circuits, int * parentA, int * parentB, int no_units, in
 
 	do
 	{
-		ref2 = ((double)rand()) / RAND_MAX; //get another random number
+		double ref2 = ((double)rand()) / RAND_MAX; //get another random number
 		double refNum2 = ref2 * totalFitness;
 
 		for (int i = 1; i < no_circuits; i++)
@@ -183,10 +191,65 @@ void pairParents(int ** circuits, int * parentA, int * parentB, int no_units, in
 			}
 		}
 	} while (index2 == -1);
+ 
+	parentA = circuits[index1];
+	parentB = circuits[index2];
 
-	for (int i = 0; i < 2 * no_units + 1; i++) //assign it to the pointer of parentA and B
+}
+
+
+void createOffsprings(CCircuit* parents, CCircuit& childA, CCircuit& childB, int no_units, int no_circuits, double mute_limit, double* fitness)
+{
+	CCircuit parentA (no_units);
+	CCircuit parentB (no_units);
+
+	pairParents(parents, parentA, parentB, no_units, no_circuits, fitness);
+	crossOver(parentA.circuit_ints, parentB.circuit_ints, no_units);
+	mutate(parentA.circuit_ints, no_units, mute_limit);
+	mutate(parentB.circuit_ints, no_units, mute_limit);
+
+	intArrayToUnits(parentA.circuit_ints, parentA.circuit_units, no_units);
+	intArrayToUnits(parentB.circuit_ints, parentB.circuit_units, no_units);
+
+	childA = parentA;
+	childB = parentB;
+}
+
+void swapGrids(CCircuit* parents, CCircuit* offsprings, int no_circuits)
+{
+	for (int i = 0; i < no_circuits; i++)
 	{
-		parentA[i] = circuits[index1][i];
-		parentB[i] = circuits[index2][i];
+		parents[i] = offsprings[i];
 	}
 }
+
+/*
+void checkTermination(int iter_count, int** offspring, int convergence_limit)
+{
+	int count = 0;
+	int convergenceCount = 0;
+	int maxfitness = 0;
+	double* fitness[no_circuits];
+	do
+	{
+		for (int i = 0; i < no_circuits; i++)
+		{
+			fitness[i] = balance_mass(parents[i], tol = 1e-7);
+		}
+		createOffsprings(parents, children, no_units, no_circuits, mute_limit, swap_limit, fitness);
+		//Two ways 1. compare the fitness[0] each time 2. compare each elements of the first children
+		if (balance_mass(children[0], tol = 1e-7) > max_fitness)
+		{
+			max_fitness = balance_mass(children[0]);
+			convergenceCount = 1;
+		}
+		else if (fitness[0] == max_fitness)
+		{
+			convergenceCount++;
+		}
+		if (convergenceCount >= convergence_limit) break;
+		std::swap(parent, children);
+		count++
+	} while (count < iter_count);
+}
+*/
