@@ -51,11 +51,23 @@ int main(int argc, char * argv[])
 	//best_circuit.printCircuit();
 	offsprings[0] = best_circuit;
 	offspring_count++;
-
-	CCircuit offspringA, offspringB;
-	createOffsprings(parents, offspringA, offspringB, no_units, no_circuits, p_mutation, fitness);
-	printf("\n1 valid? %d\n", (int) checkValidity(offspringA));
-	offspringA.printCircuit();
+	CCircuit offspringA(no_units), offspringB(no_units);
+	while (offspring_count < no_circuits)
+		{
+			// Create offsprings from two random parents (with mutation and crossover) -- check if valid and store in grid
+			createOffsprings(parents, offspringA, offspringB, no_units, no_circuits, p_mutation, fitness);
+			if (checkValidity(offspringA) && offspring_count != no_circuits)
+			{
+				offsprings[offspring_count] = offspringA;
+				offspringA.printCircuit();
+				offspring_count++;
+			}
+			if (checkValidity(offspringB) && offspring_count != no_circuits)
+			{
+				offsprings[offspring_count] = offspringB;
+				offspring_count++;
+			}
+		}
 
 	//printf("\n2 valid? %d\n", (int) checkValidity(offspringB, true));
 	//offspringB.printCircuit();

@@ -92,9 +92,6 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int
 	else {
 		if(units[unit_num].conc_num == num_units)
 		{
-			if(debug){
-				printf("\n Marking conc exit as true from unit %d", unit_num);
-			}
 			conc_exit = true;
 			}
 		// ...Potentially do something to indicate that you have seen an exit
@@ -108,9 +105,6 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int
 	else {
 		if(units[unit_num].tail_num == num_units + 1)
 		{
-			if(debug){
-				printf("\n Marking tail exit as true from unit %d", unit_num);
-			}
 			tail_exit = true;
 			}
 		// ...Potentially do something to indicate that you have seen an exit
@@ -136,24 +130,8 @@ bool checkValidity(CCircuit circuit)
 	resetMarks(circuit_units, no_units);
 	markUnits(int_array[0], circuit_units, conc_exit, tail_exit, no_units); //units[0].id
 	//if not traversed to exit
-	if(debug)
-	{
-		//printf("\n In checkValidity\n");
-		//circuit.printCircuit();
-		//printf("\n No units %d", no_units);
-		printf("\n Int array:");
-		for(int i = 0; i < 2*no_units + 1; i++)
-		{
-			printf("%d ", int_array[i]);
-		}
-		printf("\nConc exit %d, tail exit %d\n", (int) conc_exit, (int) tail_exit);
-	}
 	if (!conc_exit || !tail_exit)
 	{
-		if(debug)
-		{
-			printf("\n Both exits not found");
-		}
 		return false;
 	}
 	//check traverse every one
@@ -161,10 +139,6 @@ bool checkValidity(CCircuit circuit)
 	{
 		if (!circuit_units[i].mark)
 		{
-			if(debug)
-			{
-				printf("\n Every unit not traversed");
-			}
 			return false;
 		}
 	}
@@ -174,10 +148,6 @@ bool checkValidity(CCircuit circuit)
 		if (int_array[i] == i / 2 || int_array[i + 1] == i / 2)
 			//if(units[j].conc_num == i || units[j].tails_num == i)
 		{
-			if(debug)
-			{
-				printf("\n Self recycle");
-			}
 			return false;
 		}
 		//do mark units
@@ -185,20 +155,12 @@ bool checkValidity(CCircuit circuit)
 		if (int_array[i] == int_array[i + 1])
 			//if(units[j].conc_num == units[j].tails_num)
 		{
-			if(debug)
-			{
-				printf("\n Both exits go to same place");
-			}
 			return false;
 		}
 		conc_exit = false; tail_exit = false; resetMarks(circuit_units, no_units);
 		markUnits(i / 2, circuit_units, conc_exit, tail_exit, no_units);
 		if (!conc_exit || !tail_exit)
 		{
-			if(debug)
-			{
-				printf("\n Can't find both exits from %d", i/2);
-			}
 			return false;
 		}
 		//if conc goes to itself, tails goes to itself

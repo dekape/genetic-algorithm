@@ -152,14 +152,12 @@ void pairParents(CCircuit *circuits, CCircuit &parentA, CCircuit &parentB, int n
 			min_fit = fitness[i]; //!!!!!!!
 		}
 	}
-	printf("\nMin fit: %f \n", min_fit);
 
 	for (int i = 0; i < no_circuits; i++) //fix the fitness array and calculate the totalFitness
 	{
 		fitness[i] -= min_fit;
 		totalFitness += fitness[i];
 	}
-	printf("\nTotal fit: %f \n", totalFitness);
 	double ref1 = ((double)rand()) / RAND_MAX; //get a random number within the range of totalFitness
 	double refNum1 = ref1 * totalFitness;
 	double fitnessRef = 0; //use a reference number to get the index
