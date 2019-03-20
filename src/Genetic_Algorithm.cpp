@@ -39,9 +39,9 @@ void computeFitness(CCircuit* parents, double* fitness, int no_circuits)
 
 void selectBestCircuit(CCircuit* circuits, double* fitness, CCircuit& best_circuit, int no_circuits, int no_units)
 {
-	int max_fit = 0;
+	int max_fit = fitness[0];
 	int i_max = 0;
-	for (int i = 0; i < no_circuits; i++)
+	for (int i = 1; i < no_circuits; i++)
 	{
 		if (fitness[i] > max_fit)
 		{
@@ -82,7 +82,7 @@ void generateCircuits(int no_units, int no_circuits, CCircuit* parents)
 		if (checkValidity(Circuit))	// If valid circuit
 		{
 			// Add circuit to parents grid
-			parents[valid_count] = CCircuit(no_units, Circuit.circuit_ints);
+			parents[valid_count] = Circuit;
 
 			// Increment number of valid circuits
 			valid_count++;
@@ -94,14 +94,18 @@ void generateCircuits(int no_units, int no_circuits, CCircuit* parents)
 }
 
 
-void crossOver(int *circuitA, int *circuitB, int no_unit)
+void crossOver(int *circuitA, int *circuitB, int no_unit, double p_crossing)
 {
-	int index = 1 + rand() % (2 * no_unit - 1);
-	for (int i = index; i < 2 * no_unit + 1; i++)
+	double p_cross_rate = ((double)rand()) / RAND_MAX;
+	if(p_cross_rate <= p_crossing)
 	{
-		int temp = circuitA[i];
-		circuitA[i] = circuitB[i];
-		circuitB[i] = temp;
+		int index = 1 + rand() % (2 * no_unit - 1);
+		for (int i = index; i < 2 * no_unit + 1; i++)
+		{
+			int temp = circuitA[i];
+			circuitA[i] = circuitB[i];
+			circuitB[i] = temp;
+		}
 	}
 }
 
@@ -142,8 +146,7 @@ void pairParents(CCircuit *circuits, CCircuit &parentA, CCircuit &parentB, int n
 	double totalFitness = 0; //total fitness after fix
 	int index1 = -1; //index for parentA
 	int index2 = -1; //index for parentB
-
-	int min_fit = fitness[0]; //compensation number to make sure all fitness numbers are larger than 0
+	double min_fit = fitness[0]; //compensation number to make sure all fitness numbers are larger than 0
 	for (int i = 1; i < no_circuits; i++)
 	{
 		if (fitness[i] < min_fit)
@@ -151,7 +154,6 @@ void pairParents(CCircuit *circuits, CCircuit &parentA, CCircuit &parentB, int n
 			min_fit = fitness[i]; //!!!!!!!
 		}
 	}
-
 
 	for (int i = 0; i < no_circuits; i++) //fix the fitness array and calculate the totalFitness
 	{
@@ -171,22 +173,20 @@ void pairParents(CCircuit *circuits, CCircuit &parentA, CCircuit &parentB, int n
 			break;
 		}
 	}
-	fitnessRef = 0; //clear the fitness reference
 
+	//totalFitness -= fitness[index1]; //get already selected out
+	fitnessRef = 0; //clear the fitness reference
 	do
 	{
 		double ref2 = ((double)rand()) / RAND_MAX; //get another random number
 		double refNum2 = ref2 * totalFitness;
 
-		for (int i = 1; i < no_circuits; i++)
+		for (int i = 0; i < no_circuits; i++)
 		{
-			fitnessRef += fitness[i];
+			fitnessRef += fitness[i]; //ignore the first choice
 			if (fitnessRef >= refNum2)
 			{
-				if (index1 != i) //make sure it's not equal to parentA
-				{
-					index2 = i;
-				}
+				index2 = i;
 				break; //if it is equal, break anyways
 			}
 		}
@@ -198,13 +198,13 @@ void pairParents(CCircuit *circuits, CCircuit &parentA, CCircuit &parentB, int n
 }
 
 
-void createOffsprings(CCircuit* parents, CCircuit& childA, CCircuit& childB, int no_units, int no_circuits, double mute_limit, double* fitness)
+void createOffsprings(CCircuit* parents, CCircuit& childA, CCircuit& childB, int no_units, int no_circuits, double mute_limit, double* fitness, double cross_limit)
 {
 	CCircuit parentA (no_units);
 	CCircuit parentB (no_units);
 
 	pairParents(parents, parentA, parentB, no_units, no_circuits, fitness);
-	crossOver(parentA.circuit_ints, parentB.circuit_ints, no_units);
+	crossOver(parentA.circuit_ints, parentB.circuit_ints, no_units, cross_limit);
 	mutate(parentA.circuit_ints, no_units, mute_limit);
 	mutate(parentB.circuit_ints, no_units, mute_limit);
 

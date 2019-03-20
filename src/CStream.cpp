@@ -33,3 +33,15 @@ CStream &CStream::operator+=(CStream &rhs) {
     // return the reference to this modified stream
 	return *this;
 }
+
+CStream &CStream::operator=(CStream &rhs)
+{
+	if (this != &rhs)
+	{
+		value = rhs.value;
+		waste = rhs.waste;
+	}
+
+	return *this;
+
+}

@@ -25,5 +25,22 @@ public:
 	// and the two outputs (concentrate and tail)
 	CStream curr_in_feed, old_in_feed,
 			conc, tail;
+
+
+	CUnit &operator=(CUnit &other)
+	{
+		if (this != &other)
+		{
+			conc_num = other.conc_num;
+			tail_num = other.tail_num;
+			mark = other.mark;
+			id = other.id;
+			curr_in_feed = other.curr_in_feed;
+			old_in_feed = other.old_in_feed;
+			conc = other.conc;
+		}
+
+		return *this;
+	}
 };
 #endif // !CUNIT_H
