@@ -28,7 +28,7 @@ clean:
 
 .PHONY: Genetic_Algorithm all clean
 
-TESTS = test1 test2 test3 test4 test5
+TESTS = test1 test2 test4 test5 test6 test7
 
 runtests: ${TESTS}
 	@python3 run_tests.py
@@ -39,11 +39,15 @@ test1: $(TEST_BIN_DIR)/test1
 
 test2: $(TEST_BIN_DIR)/test2
 
-test3: $(TEST_BIN_DIR)/test3
+#test3: $(TEST_BIN_DIR)/test3
 
 test4: $(TEST_BIN_DIR)/test4
 
 test5: $(TEST_BIN_DIR)/test5
+
+test6: $(TEST_BIN_DIR)/test6
+
+test7: $(TEST_BIN_DIR)/test7
 
 $(TEST_BIN_DIR)/test1: $(TEST_BUILD_DIR)/test1.o $(BUILD_DIR)/Genetic_Algorithm.o $(BUILD_DIR)/CCircuit.o $(BUILD_DIR)/CUnit.o $(BUILD_DIR)/CStream.o
 	$(CXX) -o $@ $^ $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
@@ -51,13 +55,19 @@ $(TEST_BIN_DIR)/test1: $(TEST_BUILD_DIR)/test1.o $(BUILD_DIR)/Genetic_Algorithm.
 $(TEST_BIN_DIR)/test2: $(TEST_BUILD_DIR)/test2.o $(BUILD_DIR)/Genetic_Algorithm.o $(BUILD_DIR)/CCircuit.o $(BUILD_DIR)/CUnit.o $(BUILD_DIR)/CStream.o
 	$(CXX) -o $@ $^ $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
-$(TEST_BIN_DIR)/test3: $(TEST_BUILD_DIR)/test3.o $(BUILD_DIR)/Genetic_Algorithm.o $(BUILD_DIR)/CCircuit.o $(BUILD_DIR)/CUnit.o $(BUILD_DIR)/CStream.o
-	$(CXX) -o $@ $^ $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
+# $(TEST_BIN_DIR)/test3: $(TEST_BUILD_DIR)/test3.o $(BUILD_DIR)/Genetic_Algorithm.o $(BUILD_DIR)/CCircuit.o $(BUILD_DIR)/CUnit.o $(BUILD_DIR)/CStream.o
+# 	$(CXX) -o $@ $^ $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
 $(TEST_BIN_DIR)/test4: $(TEST_BUILD_DIR)/test4.o $(BUILD_DIR)/Genetic_Algorithm.o $(BUILD_DIR)/CCircuit.o $(BUILD_DIR)/CUnit.o $(BUILD_DIR)/CStream.o
 	$(CXX) -o $@ $^ $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
 $(TEST_BIN_DIR)/test5: $(TEST_BUILD_DIR)/test5.o $(BUILD_DIR)/Genetic_Algorithm.o $(BUILD_DIR)/CCircuit.o $(BUILD_DIR)/CUnit.o $(BUILD_DIR)/CStream.o
+	$(CXX) -o $@ $^ $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
+
+$(TEST_BIN_DIR)/test6: $(TEST_BUILD_DIR)/test6.o $(BUILD_DIR)/Genetic_Algorithm.o $(BUILD_DIR)/CCircuit.o $(BUILD_DIR)/CUnit.o $(BUILD_DIR)/CStream.o
+	$(CXX) -o $@ $^ $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
+
+$(TEST_BIN_DIR)/test7: $(TEST_BUILD_DIR)/test7.o $(BUILD_DIR)/Genetic_Algorithm.o $(BUILD_DIR)/CCircuit.o $(BUILD_DIR)/CUnit.o $(BUILD_DIR)/CStream.o
 	$(CXX) -o $@ $^ $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
 $(TEST_BUILD_DIR)/%.o: $(TEST_DIR)/%.cpp $(INCLUDE_DIR)/*.h | test_directories
