@@ -8,8 +8,8 @@
 
 int main(int argc, char * argv[])
 {
-	double mute_limit = 1;
-	double mute_nolimit = 0;
+	double mute_limit = 1; // will always mutate
+	double mute_nolimit = 0; // will never mutate
     const int num_units = 10;
 	srand(time(NULL));
 	int vec1[2 * num_units + 1] = { 0, 1, 2, 3, 4, 4, 5, 6, 7, 7, 8, 8, 9,
@@ -23,38 +23,36 @@ int main(int argc, char * argv[])
 
 	mutate(vec2, num_units, mute_limit);
 
-	bool flag = false;
-	bool flag_no = false;
+	bool flag = true;
+	bool flag_no = true;
 
+	//check if there is always mutation
 	for (int i = 0; i < 2 * num_units + 1; i++)
 	{
-		if (vec2[i] != vec1[i]) flag = true;
-		else
-		{
-		    flag = false;
+		if (vec2[i] == vec1[i]){
+			flag = false;
 			break;
 		}
 	}
 
 	mutate(vec3, num_units, mute_nolimit);
 
+	//check if there are no mutation at all
 	for (int i = 0; i < 2 * num_units + 1; i++)
 	{
-		if (vec3[i] == vec1[i]) flag_no = true;
-		else
-		{
-		    flag_no = false;
+		if (vec3[i] != vec1[i]){
+			flag_no = false;
 			break;
 		}
 	}
 
-	std::cout << "Check mutate function Case 1: ";
+	std::cout << "Check mutate function Case all mutate: ";
 	if (flag == true)
 		std::cout << "pass\n";
 	else
 		std::cout << "fail\n";
 
-	std::cout << "Check mutate function Case 2: ";
+	std::cout << "Check mutate function Case no mutation: ";
 	if (flag_no == true)
 		std::cout << "pass\n";
 	else
