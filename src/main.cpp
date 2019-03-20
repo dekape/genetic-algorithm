@@ -4,11 +4,11 @@
 #include "CUnit.h"
 #include "CCircuit.h"
 #include "CStream.h"
-//#define DEBUG
+#define DEBUG true
 
 using namespace std;
 
-int iter_max = 5000;							// max number of iterations
+int iter_max = 2;							// max number of iterations
 int p_crossing = 0.9;						// probability of crossing over
 int p_mutation = 0.001;						// probability of mutation
 int no_units = 10;							// total number of units
@@ -108,6 +108,11 @@ int main(int argc, char * argv[])
 		if (iter_count == iter_max) terminate = true;
 	}
 
+	#ifdef DEBUG
+			selectBestCircuit(parents, fitness, best_circuit, no_circuits, no_units);
+			cout << "BEST CIRCUIT" << endl;
+			best_circuit.printCircuit();
+	#endif // DEBUG
 
 
 	// Delete dynamically allocated memory
