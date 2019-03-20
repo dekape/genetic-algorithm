@@ -1,4 +1,3 @@
-/*
 #include <cmath>
 #include <ctime>
 #include <iostream>
@@ -86,4 +85,4 @@ int main(int argc, char * argv[])
 	else
 		std::cout << "fail\n";
 }
-*/
+
