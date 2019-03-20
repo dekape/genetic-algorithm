@@ -16,8 +16,8 @@
  {
      srand(time(NULL));
 
-     int no_units = 10;
-     int no_circuits = 100;
+     int no_units = 3;
+     int no_circuits = 10;
      double mute_limit = 0.01;
      double swap_limit = 0.01;
 
@@ -31,9 +31,28 @@
          children[i].initialise(no_units);
      }
 
+     bool not_empty = false;
      generateCircuits(no_units, no_circuits, parents);
 
-     std::cout << "generateCircuits test: pass" << std::endl;
+     //if even one element is populate, the loop quits
+     //this is a work around since we cannot check for empty in int array
+     //C++ treat 0 and '\0' as the same thing.
+     for(int i=0;i<no_circuits;i++){
+         for(int j=0;j<2 * no_units + 1;j++){
+             if(parents[i].circuit_ints[j] != '\0'){
+                 std::cout << "not empty at " << i << " " << j << std::endl;
+                 not_empty = true;
+                 break;
+             }
+         }
+         if(not_empty) break;
+     }
+
+     std::cout << "generateCircuits test: ";
+     if (not_empty)
+         std::cout << "pass\n";
+     else
+         std::cout << "fail\n";
 
      bool pa_in = false, pb_in = false;
      CCircuit parentA;
@@ -48,7 +67,21 @@
      }
      pairParents(parents, parentA, parentB, no_units, no_circuits, fitness);
 
-
+     //check that the returned parentA and parentB comes from the parent list.
+     //parentA check
+     for(int i=0;i<no_circuits;i++){
+         for(int j=0;j<2 * no_units + 1;j++){
+             if(parentA.circuit_ints[j] == parents[i].circuit_ints[j]) pa_in = true;
+             else
+             {
+                 break;
+             }
+         }
+         if(pa_in){
+             break;
+         }
+     }
+     //parentB check
      for(int i=0;i<no_circuits;i++){
          for(int j=0;j<2 * no_units + 1;j++){
              // std::cout << i << " " << j << std::endl;
@@ -63,39 +96,60 @@
          }
      }
 
-     for(int i=0;i<no_circuits;i++){
-         for(int j=0;j<2 * no_units + 1;j++){
-             if(parentA.circuit_ints[j] == parents[i].circuit_ints[j]) pa_in = true;
-             else
-             {
-                 break;
-             }
-         }
-         if(pa_in){
-             break;
-         }
-     }
-
      std::cout << "pairParents test: ";
      if (pa_in && pb_in)
          std::cout << "pass\n";
      else
          std::cout << "fail\n";
 
-     createOffsprings(parents, parentA, parentB, no_units, no_circuits, mute_limit, swap_limit, fitness);
-//     parentA.printCircuit();
-//     std::cout << "-----" << std::endl;
-//     parentB.printCircuit();
-     std::cout << "createOffsprings test: pass" << std::endl;
+     bool ca_in = false, cb_in = false;
+     CCircuit childA;
+     CCircuit childB;
 
-     
+     //set mutation and crossover limit to 0, all children will be a copy of the parent
+     createOffsprings(parents, childA, childB, no_units, no_circuits, 0, 0, fitness);
+
+     //check childA
+     for(int i=0;i<no_circuits;i++){
+         for(int j=0;j<2 * no_units + 1;j++){
+             // std::cout << i << " " << j << std::endl;
+             if(childA.circuit_ints[j] == parents[i].circuit_ints[j]) ca_in = true;
+             else
+             {
+                 break;
+             }
+         }
+         if(ca_in){
+             break;
+         }
+     }
+     //check childB
+     for(int i=0;i<no_circuits;i++){
+         for(int j=0;j<2 * no_units + 1;j++){
+             // std::cout << i << " " << j << std::endl;
+             if(childB.circuit_ints[j] == parents[i].circuit_ints[j]) cb_in = true;
+             else
+             {
+                 break;
+             }
+         }
+         if(cb_in){
+             break;
+         }
+     }
+     std::cout << "createOffsprings test: ";
+     if (ca_in && cb_in)
+         std::cout << "pass\n";
+     else
+         std::cout << "fail\n";
+
      bool swapped = true;
      CCircuit * temp;
      temp = new CCircuit[no_circuits];
-     
+
      generateCircuits(no_units, no_circuits, children);
      generateCircuits(no_units, no_circuits, temp);
-     
+
      for(int j=0;j<no_circuits;j++){
          temp[j].initialise(no_units);
          for(int i=0;i<2 * no_units + 1;i++){
@@ -105,7 +159,7 @@
      }
 
      swapGrids(parents, children, no_circuits);
-     
+
      //check parent is same as temp
      for(int j=0;j<no_circuits;j++){
          for(int i=0;i<2 * no_units + 1;i++){
@@ -115,7 +169,7 @@
              }
          }
      }
-     
+
      std::cout << "swapGrids test: ";
      if (swapped)
          std::cout << "pass\n";
@@ -125,8 +179,3 @@
      delete [] parents;
      delete [] children;
  }
-
-
-//int main(){
-//  return 0;
-//}
