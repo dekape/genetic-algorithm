@@ -1,6 +1,7 @@
 #include "CCircuit.h"
 #include "Genetic_Algorithm.h"
 
+
 using namespace std;
 
 CCircuit::CCircuit()
@@ -24,6 +25,7 @@ CCircuit::CCircuit(int no_units)
 	this->circuit_ints = new int[2*no_units + 1];
 	this->circuit_units = new CUnit[no_units];
 }
+
 CCircuit::CCircuit(int no_units, int* circuit_array)
 {
 	this->feed_id = circuit_array[0];
@@ -86,7 +88,11 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int
 
 	//if its next unit is not an exit, mark it
 	if (units[unit_num].conc_num < num_units) {
+<<<<<<< HEAD
 		markUnits(units[unit_num].conc_num, units, conc_exit, tail_exit, num_units); //go to
+=======
+		markUnits(units[unit_num].conc_num, units, conc_exit, tail_exit, num_units); //go to
+>>>>>>> frank
 	}
 	else {
 		if(units[unit_num].conc_num == num_units)
@@ -95,7 +101,11 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int
 			}
 		// ...Potentially do something to indicate that you have seen an exit
 	}
+<<<<<<< HEAD
 	//If tails_num does not point at a circuit outlet recursively call the function
+=======
+	//If tails_num does not point at a circuit outlet recursively call the function
+>>>>>>> frank
 
 	//if its next unit is not an exit, mark it
 	if (units[unit_num].tail_num < num_units) {
@@ -105,7 +115,7 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int
 		if(units[unit_num].tail_num == num_units + 1)
 		{
 			tail_exit = true;
-        }
+			}
 		// ...Potentially do something to indicate that you have seen an exit
 	}
 }
@@ -253,7 +263,8 @@ double balance_mass(CCircuit circuit_obj, double tol) {
 		for (int i = 0; i < num_units; i++) {
 
 			// Else add to circuit total output feed
-			if (circuit[i].conc_num != num_units) {
+			if (circuit[i].conc_num < num_units) {
+			// if (circuit[i].conc_num != num_units) {
 				circuit[circuit[i].conc_num].curr_in_feed += circuit[i].conc;
 			}
 
@@ -262,7 +273,8 @@ double balance_mass(CCircuit circuit_obj, double tol) {
 			// NOTE: I'm skipping adding anything to the circuits
 			// total tail output, we dont need it so no need to
 			// calculate it
-			if (circuit[i].tail_num != num_units + 1)
+			if (circuit[i].tail_num < num_units)
+			// if (circuit[i].tail_num != num_units + 1)
 			{
 				circuit[circuit[i].tail_num].curr_in_feed += circuit[i].tail;
 			}

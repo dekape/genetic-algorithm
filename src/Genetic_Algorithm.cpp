@@ -41,7 +41,8 @@ void selectBestCircuit(CCircuit* circuits, double* fitness, CCircuit& best_circu
 {
 	int max_fit = fitness[0];
 	int i_max = 0;
-	for (int i = 1; i < no_circuits; i++)
+  // for (int i = 1; i < no_circuits; i++)
+	for (int i = 0; i < no_circuits; i++)
 	{
 		if (fitness[i] > max_fit)
 		{
@@ -160,7 +161,7 @@ void pairParents(CCircuit *circuits, CCircuit &parentA, CCircuit &parentB, int n
 			break;
 		}
 	}
-    cout << "hi" << endl;
+
 	fitnessRef = 0; //clear the fitness reference
 	do
 	{
@@ -173,7 +174,6 @@ void pairParents(CCircuit *circuits, CCircuit &parentA, CCircuit &parentB, int n
 			if (fitnessRef >= refNum2)
 			{
 				index2 = i;
-				cout << "hi" << endl;
 				break; //if it is equal, break anyways
 			}
 		}
@@ -194,9 +194,9 @@ void createOffsprings(CCircuit* parents, CCircuit& childA, CCircuit& childB,
 
 	pairParents(parents, parentA, parentB, no_units, no_circuits, fitness_adjusted, totalFitness);
 
-	cout << " PARENTS: " << endl;
-	cout << "\t A: "; parentA.printCircuit();
-	cout << "\t B: "; parentB.printCircuit();
+	//cout << " PARENTS: " << endl;
+	//cout << "\t A: "; parentA.printCircuit();
+	//cout << "\t B: "; parentB.printCircuit();
 	mutate(parentA.circuit_ints, no_units, mute_limit);
 	mutate(parentB.circuit_ints, no_units, mute_limit);
 	crossOver(parentA.circuit_ints, parentB.circuit_ints, no_units, cross_limit);
@@ -208,17 +208,17 @@ void createOffsprings(CCircuit* parents, CCircuit& childA, CCircuit& childB,
 	childA = parentA;
 	childB = parentB;
 
-	cout << " CHILDREN: " << endl;
-	cout << "\t A: "; childA.printCircuit();
-	cout << "\t B: "; childB.printCircuit();
+	//cout << " CHILDREN: " << endl;
+	//cout << "\t A: "; childA.printCircuit();
+	//cout << "\t B: "; childB.printCircuit();
 }
 
 void swapGrids(CCircuit* parents, CCircuit* offsprings, int no_circuits)
 {
-    for (int i = 0; i < no_circuits; i++)
-    {
-        parents[i] = offsprings[i];
-    }
+	for (int i = 0; i < no_circuits; i++)
+	{
+		parents[i] = offsprings[i];
+	}
 }
 
 /*

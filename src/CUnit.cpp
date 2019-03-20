@@ -17,5 +17,3 @@ CUnit::CUnit(int id, int conc_num, int tail_num)
 CUnit::~CUnit()
 {
 }
-
-

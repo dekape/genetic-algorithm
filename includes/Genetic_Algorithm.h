@@ -6,6 +6,7 @@
 #include <time.h>
 #include <iostream>
 #include <cstdlib>
+#include <algorithm>
 #include "CUnit.h"
 #include "CCircuit.h"
 
@@ -21,15 +22,6 @@ void computeFitness(CCircuit* parents, double*fitness, int no_circuits);
 
 void selectBestCircuit(CCircuit* circuits, double* fitness, CCircuit& best_circuit, int no_circuits, int no_units);
 
-<<<<<<< HEAD
-void pairParents(CCircuit *circuits, CCircuit &parentA, CCircuit &parentB, int no_units, int no_circuits, double* fitness);
-
-void crossOver(int *circuitA, int *circuitB, int no_unit, double cross_limit);
-
-void mutate(int *circuit, int no_unit, double mute_limit);
-
-void createOffsprings(CCircuit* parents, CCircuit& childA, CCircuit& childB, int no_units, int no_circuits, double mute_limit, double swap_limit, double* fitness);
-=======
 void crossOver(int *circuitA, int *circuitB, int no_units, double p_crossing);
 
 void mutate(int *circuit, int no_unit, double mute_limit);
@@ -37,7 +29,6 @@ void mutate(int *circuit, int no_unit, double mute_limit);
 void pairParents(CCircuit *parents, CCircuit &parentA, CCircuit & parentB, int no_units, int no_circuits,double * fitness, double totalFitness);
 
 void createOffsprings(CCircuit* parents, CCircuit& childA, CCircuit& childB, int no_units, int no_circuits, double mute_limit, double* fitness, double cross_limit, double totalFitness);
->>>>>>> duncino
 
 void swapGrids(CCircuit* parents, CCircuit* offsprings, int no_circuits);
 
