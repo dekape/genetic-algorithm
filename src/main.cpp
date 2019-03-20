@@ -38,9 +38,22 @@ int main(int argc, char * argv[])
 	for (int i = 0; i < no_circuits; i++)
 		parents[i].printCircuit();
 
-	bool terminate = false;
+	//bool terminate = false;
 	fitness = new double[no_circuits];
-	while (!terminate)
+	for (int i = 0; i < no_circuits; i++)
+	{
+		fitness[i] = rand() % 150;
+	}
+
+	selectBestCircuit(parents, fitness, best_circuit, no_circuits, no_units);
+	printf("\nBest circuit:");
+	best_circuit.printCircuit();
+	offsprings[0] = best_circuit;
+	offspring_count++;
+
+	CCircuit offspringA, offspringB;
+
+	/*while (!terminate)
 	{	
 		// Calculate fitness of all circuits
 		//computeFitness(parents, fitness, no_circuits);
@@ -49,7 +62,6 @@ int main(int argc, char * argv[])
 
 
 		//// Store highest fitness as offspring
-		selectBestCircuit(parents, fitness, best_circuit, no_circuits, no_units);
 		offsprings[0] = best_circuit;
 		offspring_count++;
 
@@ -80,14 +92,14 @@ int main(int argc, char * argv[])
 
 		// Evaluate termination
 		terminate = true;
-	}
+	}*/
 
 
 
 	// Delete dynamically allocated memory
 	delete[] parents;
-	//delete[] offsprings;
-	//delete[] fitness;
+	delete[] offsprings;
+	delete[] fitness;
 	//delete[] best_circuit;
 
 	system("pause");
