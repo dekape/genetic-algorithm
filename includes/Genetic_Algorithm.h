@@ -17,16 +17,14 @@ void intArrayToUnits(int *int_array, CUnit *circuit, int no_units);
 
 void generateCircuits(int no_units, int no_circuits, CCircuit* parents);
 
-void computeFitness(CCircuit* parents, double*fitness, int no_circuits);
+void computeFitness(CUnit** circuits, double*fitness, int no_circuits);
 
-void selectBestCircuit(CCircuit* circuits, double* fitness, CCircuit& best_circuit, int no_circuits, int no_units);
+void selectBestCircuit(CUnit**circuits, double* fitness, CUnit* best_circuit, int no_circuits, int no_units);
 
 void crossOver(int *circuitA, int *circuitB, int no_units);
 
-void mutate(int *circuit, int no_unit, double mute_limit);
+void mutate(int *circuit, int no_unit);
 
-void createOffsprings(CCircuit* parents, CCircuit& childA, CCircuit& childB, int no_units, int no_circuits, double mute_limit, double* fitness);
-
-void swapGrids(CCircuit* parents, CCircuit* offsprings, int no_circuits);
+void pairParents(int ** circuits, int * parentA, int * parentB, int no_units, int no_circuits, double* fitness);
 
 #endif // !GENETIC_ALGORITHM_H

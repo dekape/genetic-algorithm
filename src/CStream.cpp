@@ -2,7 +2,7 @@
 
 CStream::CStream()
 {
-	value = 0; waste = 0;
+	conc = 0; tail = 0;
 }
 
 CStream::~CStream() {}
@@ -10,13 +10,13 @@ CStream::~CStream() {}
 // Addition operator override
 CStream CStream::operator+(CStream &rhs) {
 
-	// Create new stream 
+    // Create new stream 
 	CStream out_stream;
 
-
-	// Add old streams into new stream
-	out_stream.value = value + out_stream.value;
-	out_stream.waste = waste + out_stream.waste;
+	
+    // Add old streams into new stream
+	out_stream.conc = conc + out_stream.conc;
+    out_stream.tail = tail + out_stream.tail;
 
 
 	return out_stream;
@@ -25,11 +25,11 @@ CStream CStream::operator+(CStream &rhs) {
 
 // In-place addition operator override
 CStream &CStream::operator+=(CStream &rhs) {
-
-	// Append the values and wastes
-	value += rhs.value;
-	waste += rhs.waste;
-
-	// return the reference to this modified stream
+	
+    // Append the concentrates and tails
+	conc += rhs.conc;
+    tail += rhs.tail;
+    
+    // return the reference to this modified stream
 	return *this;
 }
