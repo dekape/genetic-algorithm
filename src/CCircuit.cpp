@@ -212,13 +212,15 @@ double balance_mass(CCircuit circuit_obj, double tol) {
 	double waste_change;
 	double max_value_change;
 	double max_waste_change;
-	double max_total_change = tol + 1;
 	// Keep going until convergence
-	int num_iterations = 0;
-	while (max_total_change > tol && num_iterations++ < 100)
+	const int max_iterations = 200;
+	int iter = 0;
+	double max_total_change[max_iterations];
+	max_total_change[0] = tol + 1;
+	while (max_total_change[iter] > tol && ++iter < max_iterations)
 	{
 		// Reset maximum change in feed values overall in circuit
-		max_total_change = 0;
+		max_total_change[iter] = 0;
 
 		// Calculate flowrate of all components
 		for (int i = 0; i < num_units; i++) {
@@ -279,8 +281,15 @@ double balance_mass(CCircuit circuit_obj, double tol) {
 		}
 
 		// Overall maximum change in circuit feed
-		max_total_change = max(max_value_change, max_waste_change);
+		max_total_change[iter] = max(max_value_change, max_waste_change);
+	}
 
+
+	// Circuit has diverged, last change is too large
+	if (max_total_change[iter] > 10) {
+		// Worst possible result, use to diagnose for 
+		// invalidity of entire circuit
+		return -50000;
 	}
 
 
