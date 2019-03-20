@@ -25,7 +25,8 @@ void crossOver(int *circuitA, int *circuitB, int no_units);
 
 void mutate(int *circuit, int no_unit, double mute_limit);
 
-void createOffsprings(CCircuit* parents, CCircuit* children, int no_units, int no_circuits, double mute_limit, double* fitness);
+void createOffsprings(CCircuit* parents, CCircuit& childA, CCircuit& childB, int no_units, int no_circuits, double mute_limit, double* fitness);
 
+void swapGrids(CCircuit* parents, CCircuit* offsprings, int no_circuits);
 
 #endif // !GENETIC_ALGORITHM_H

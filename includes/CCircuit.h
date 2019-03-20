@@ -51,7 +51,7 @@ double assessFitness(double gormanium_mass, double waste_mass);
 
 bool allUnitsMarked(vector<CUnit> &circuit);
 
-bool checkValidity(CCircuit circuits);
+bool checkValidity(CCircuit circuit);
 
 void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int num_units);
 
