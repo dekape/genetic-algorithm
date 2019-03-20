@@ -79,21 +79,23 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int
 	if (units[unit_num].mark)return;
 	//mark it as visited
 	units[unit_num].mark = true;
-	
+
 	//If we have seen this unit already exit
 	//Mark that we have now seen the unit
 	//If conc_num does not point at a circuit outlet recursively call the function
 
 	//if its next unit is not an exit, mark it
-	if (units[unit_num].conc_num < num_units - 1) {
-		markUnits(units[unit_num].conc_num, units, conc_exit, tail_exit, num_units); //go to 
+	if (units[unit_num].conc_num < num_units) {
+		markUnits(units[unit_num].conc_num, units, conc_exit, tail_exit, num_units); //go to
 	}
 	else {
 		if(units[unit_num].conc_num == num_units)
-		conc_exit = true;
+		{
+			conc_exit = true;
+			}
 		// ...Potentially do something to indicate that you have seen an exit
 	}
-	//If tails_num does not point at a circuit outlet recursively call the function 
+	//If tails_num does not point at a circuit outlet recursively call the function
 
 	//if its next unit is not an exit, mark it
 	if (units[unit_num].tail_num < num_units) {
@@ -101,7 +103,9 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int
 	}
 	else {
 		if(units[unit_num].tail_num == num_units + 1)
-		tail_exit = true;
+		{
+			tail_exit = true;
+        }
 		// ...Potentially do something to indicate that you have seen an exit
 	}
 }
@@ -124,9 +128,8 @@ bool checkValidity(CCircuit circuit)
 
 	resetMarks(circuit_units, no_units);
 	markUnits(int_array[0], circuit_units, conc_exit, tail_exit, no_units); //units[0].id
-
 	//if not traversed to exit
-	if (!conc_exit && !tail_exit)
+	if (!conc_exit || !tail_exit)
 	{
 		return false;
 	}
@@ -168,11 +171,12 @@ bool checkValidity(CCircuit circuit)
 
 
 
+
 // CIRCUIT MODELLING TEAM CODE BELOW //
 
 void unitArrayToVector(CUnit *unit_array, vector<CUnit> &unit_vector, int num_units) {
 
-	// One by one insert unit from array into vector 
+	// One by one insert unit from array into vector
 	for (int i = 0; i < num_units; i++) {
 		unit_vector.push_back(unit_array[i]);
 	}
@@ -180,137 +184,134 @@ void unitArrayToVector(CUnit *unit_array, vector<CUnit> &unit_vector, int num_un
 }
 
 
-double assess_fitness(vector<CUnit> &circuit) {
-	/* Return a fitness value given the masses of the ouputs from a circuit.
-	Notes
-	-----
-	The weights used here as the rewards and costs
-	prescribed in the documentation provided by stephen.
+
+double balance_mass(CCircuit circuit_obj, double tol) {
+	/* Calculate fitness value of circuit.
 	Parameters
 	----------
-	double gormanium_mass: value between 0 and 10
-	  Mass of pure product from circuit
-	double waste_mass: value between 0 and 100
-	  Mass of waste from circuit
+	CCircuit circuit_obj: custom circuit object
+		Circuit for which fitness should be calculated
+	double tol: value greater than 0
+		Tolerance under which we accept circuit has converged
 	Returns
 	-------
 	double fitness_score:
-	  Score calculate by weighted sum of gormanium and
-	  waste masses
+		Total performance of this circuit
 	*/
-
-	int output_num_1 = circuit.size();
-	double gormanium_mass = 0;
-	double waste_mass = 0;
-
-	for (auto i = 0; i < circuit.size(); i++)
-	{
-		if (circuit[i].conc_num == output_num_1) {
-			gormanium_mass = circuit[i].conc.value;
-			waste_mass = circuit[i].conc.waste;
-		}
-	}
-
-	// Weights for gormanium and waste
-	double gormanium_reward = 100;
-	double waste_cost = 500;
-
-
-	// Calculate weighted fitness value based on masses
-	double fitness_score = (gormanium_mass * gormanium_reward)
-		- (waste_mass * waste_cost);
-
-	return fitness_score;
-}
-
-
-
-bool allUnitsMarked(vector<CUnit> &circuit) {
-
-	bool all_marked = true;
-
-
-	for (auto i = 0; i < (int)circuit.size(); i++) {
-		if (!circuit[i].mark) {
-			return false;
-		}
-	}
-	return true;
-
-}
-
-
-void cal_convergence_value(vector<CUnit> &circuit, double value_c, double waste_c) {
-	value_c = -10000;
-	waste_c = -10000;
-	for (int i = 0; i < circuit.size(); i++)
-	{
-		if (value_c < abs(circuit[i].old_in_feed.value - circuit[i].curr_in_feed.value)) {
-			value_c = abs(circuit[i].old_in_feed.value - circuit[i].curr_in_feed.value);
-		}
-		if (waste_c < abs(circuit[i].old_in_feed.waste - circuit[i].curr_in_feed.waste)) {
-			waste_c = abs(circuit[i].old_in_feed.waste - circuit[i].curr_in_feed.waste);
-		}
-	}
-
-}
-
-
-double balance_mass(CCircuit circuit_obj, double tol) {
 
 
 	// Take array from circuit object and create vector
-	vector<CUnit> circuit(circuit_obj.no_units);
+	vector<CUnit> circuit;
 	unitArrayToVector(circuit_obj.circuit_units, circuit, circuit_obj.no_units);
+	int feed_index = circuit_obj.feed_id;
+	int num_units = circuit_obj.no_units;
+	//vector<CUnit> circuit(num_units, circuit_obj.circuit_units[0]);
 
 
-	double value_c = 0;
-	double waste_c = 0;
+	// Set all input feeds to 10-100 - initial guess
+	for (int i = 0; i < num_units; i++) {
+		// Current feeds
+		circuit[i].curr_in_feed.value = 10;
+		circuit[i].curr_in_feed.waste = 100;
+	}
 
-	int it = 0;
-	while ((value_c > tol || waste_c > tol) && it++ < 1000) {
-		// Set marks on all units to false
-		for (auto i = 0; i < circuit.size(); i++) {
-			circuit[i].mark = false;
+
+	double value_change;
+	double waste_change;
+	double max_value_change;
+	double max_waste_change;
+	double max_total_change = tol + 1;
+	// Keep going until convergence
+	int num_iterations = 0;
+	while (max_total_change > tol && num_iterations++ < 100)
+	{
+		// Reset maximum change in feed values overall in circuit
+		max_total_change = 0;
+
+		// Calculate flowrate of all components
+		for (int i = 0; i < num_units; i++) {
+			// Calculate values of concentrate stream
+			circuit[i].conc.value = 0.2 * circuit[i].curr_in_feed.value;
+			circuit[i].conc.waste = 0.05 * circuit[i].curr_in_feed.waste;
+
+			// Calculate values of tail stream
+			circuit[i].tail.value = 0.8 * circuit[i].curr_in_feed.value;
+			circuit[i].tail.waste = 0.95 * circuit[i].curr_in_feed.waste;
+
+			// Store into old feeds
 			circuit[i].old_in_feed = circuit[i].curr_in_feed;
 			circuit[i].curr_in_feed.value = 0;
 			circuit[i].curr_in_feed.waste = 0;
 		}
-		// Set feed circuit input to 10/100
-		circuit[0].old_in_feed.value = 10;
-		circuit[0].old_in_feed.waste = 100;
-		do_unit_cal(0, circuit);
 
-		cal_convergence_value(circuit, value_c, waste_c);
+		// Reset circuit feed to 10-100
+		circuit[feed_index].curr_in_feed.value = 10;
+		circuit[feed_index].curr_in_feed.waste = 100;
+
+		// Add all the output feeds of each cell to the
+		// inputs of the cells they point to
+		for (int i = 0; i < num_units; i++) {
+
+			// Else add to circuit total output feed
+			if (circuit[i].conc_num != num_units) {
+				circuit[circuit[i].conc_num].curr_in_feed += circuit[i].conc;
+			}
+
+
+			// Do the same for the final tail
+			// NOTE: I'm skipping adding anything to the circuits
+			// total tail output, we dont need it so no need to
+			// calculate it
+			if (circuit[i].tail_num != num_units + 1)
+			{
+				circuit[circuit[i].tail_num].curr_in_feed += circuit[i].tail;
+			}
+
+		}
+
+		// Initialise mass change storage
+		double value_change;
+		double waste_change;
+		double max_value_change = -1;
+		double max_waste_change = -1;
+
+		for (int i = 0; i < num_units; i++) {
+			// Calculate maximum change in all feed stream values
+			value_change = abs(circuit[i].curr_in_feed.value - circuit[i].old_in_feed.value);
+			max_value_change = max(max_value_change, value_change);
+
+			// Calculate maximum change in all feed stream wastes
+			waste_change = abs(circuit[i].curr_in_feed.waste - circuit[i].old_in_feed.waste);
+			max_waste_change = max(max_waste_change, waste_change);
+
+		}
+
+		// Overall maximum change in circuit feed
+		max_total_change = max(max_value_change, max_waste_change);
+
+	}
+	printf("\n Number of iterations: %d", num_iterations);
+
+	// Important values for circuit
+	double circuit_value = 0;
+	double circuit_waste = 0;
+
+	// If this unit isnt the last step in the circuit,
+	// then add to next units input feed
+	for (int i = 0; i < num_units; ++i)
+	{
+		if (circuit[i].conc_num == num_units)
+		{
+			circuit_value += circuit[i].conc.value;
+			circuit_waste += circuit[i].conc.waste;
+		}
+
 	}
 
-	return assess_fitness(circuit);
+	// Calculate weighted fitness value based on masses
+	double fitness_score = (circuit_value * 100)
+		- (circuit_waste * 500);
+	return fitness_score;
 
-}
-
-void do_unit_cal(int unit_index, vector<CUnit> &circuit) {
-
-
-	circuit[unit_index].conc.value = 0.2 * circuit[unit_index].curr_in_feed.value;
-	circuit[unit_index].conc.waste = 0.05 * circuit[unit_index].curr_in_feed.waste;
-	circuit[unit_index].tail.value = 0.8 * circuit[unit_index].curr_in_feed.value;
-	circuit[unit_index].tail.waste = 0.95 * circuit[unit_index].curr_in_feed.waste;
-	circuit[unit_index].mark = true;
-
-	if (circuit[unit_index].conc_num < circuit.size() && circuit[circuit[unit_index].conc_num].mark) {
-		circuit[circuit[unit_index].conc_num].curr_in_feed.value += circuit[unit_index].conc.value;
-		circuit[circuit[unit_index].conc_num].curr_in_feed.waste += circuit[unit_index].conc.waste;
-	}
-	else {
-		do_unit_cal(circuit[unit_index].conc_num, circuit);
-	}
-
-	if (circuit[unit_index].tail_num < circuit.size() && circuit[circuit[unit_index].tail_num].mark) {
-		circuit[circuit[unit_index].tail_num].curr_in_feed.value += circuit[unit_index].tail.value;
-		circuit[circuit[unit_index].tail_num].curr_in_feed.waste += circuit[unit_index].tail.waste;
-	}
-	else {
-		do_unit_cal(circuit[unit_index].tail_num, circuit);
-	}
 
 }

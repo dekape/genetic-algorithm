@@ -6,12 +6,6 @@
 #include "CCircuit.h"
 #include "Genetic_Algorithm.h"
 
-//
-//void swapGridsTest(CCircuit * parents, CCircuit * offsprings, int no_circuits)
-//{
-//    swap(parents, offsprings);
-//}
-
  int main(int argc, char * argv[])
  {
      srand(time(NULL));
