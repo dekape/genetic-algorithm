@@ -76,14 +76,14 @@ void generateCircuits(int no_units, int no_circuits, CCircuit* parents)
 		Circuit.no_units = no_units;
 		intArrayToUnits(circuit_array, Circuit.circuit_units, no_units);
 
-		if (checkValidity(Circuit))	// CHECK VALIDITY HERE!!
-		{
-			// Add circuit to parents grid
-			parents[valid_count] = CCircuit(no_units, Circuit.circuit_ints);
+		//if (checkValidity(Circuit))	// CHECK VALIDITY HERE!!
+		//{
+		//	// Add circuit to parents grid
+		//	parents[valid_count] = CCircuit(no_units, Circuit.circuit_ints);
 
-			// Increment number of valid circuits
-			valid_count++;
-		}
+		//	// Increment number of valid circuits
+		//	valid_count++;
+		//}
 	} while (valid_count < no_circuits);
 
 	delete[] circuit_array;

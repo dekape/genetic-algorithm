@@ -21,62 +21,62 @@ CCircuit best_circuit(no_units);			// object to store best circuit based on fitn
 
 using namespace std;
 
-int main(int argc, char * argv[])
-{
-	// Generate random valid circuits
-	parents = new CCircuit[no_circuits];
-	for (int i = 0; i < no_circuits; i++) parents[i].initialise(no_units);
-	generateCircuits(no_units, no_circuits, parents);
-	for (int i = 0; i < no_circuits; i++)
-	{
-		for (int j = 0; j < 2 * no_units + 1; j++)
-		{
-			cout << parents[i].circuit_ints[j] << " ";
-		}
-		cout << endl;
-	}
-
-	bool terminate = false;
-	while (!terminate)
-	{	
-
-		// Calculate fitness of all circuits
-
-
-		// Store highest fitness as offspring
-
-
-		// While number of offsprings is less than number of parents
-			// Select two random parents
-
-
-			// Create offsprings from two parents (with mutation and crossover) -- check if valid
-
-		
-			// Store offsprings in offsprings grid
-
-	
-		// Swap offsprings with parents
-
-		
-		// Update iteration, check for termination
-		iter_count++;
-		cout << "Iteration: " << iter_count << endl;
-		terminate = true;
-	}
-
-
+//int main(int argc, char * argv[])
+//{
+//	// Generate random valid circuits
+//	parents = new CCircuit[no_circuits];
+//	for (int i = 0; i < no_circuits; i++) parents[i].initialise(no_units);
+//	generateCircuits(no_units, no_circuits, parents);
+//	for (int i = 0; i < no_circuits; i++)
+//	{
+//		for (int j = 0; j < 2 * no_units + 1; j++)
+//		{
+//			cout << parents[i].circuit_ints[j] << " ";
+//		}
+//		cout << endl;
+//	}
+//
+//	bool terminate = false;
+//	while (!terminate)
+//	{	
+//
+//		// Calculate fitness of all circuits
+//
+//
+//		// Store highest fitness as offspring
+//
+//
+//		// While number of offsprings is less than number of parents
+//			// Select two random parents
+//
+//
+//			// Create offsprings from two parents (with mutation and crossover) -- check if valid
+//
+//		
+//			// Store offsprings in offsprings grid
+//
+//	
+//		// Swap offsprings with parents
+//
+//		
+//		// Update iteration, check for termination
+//		iter_count++;
+//		cout << "Iteration: " << iter_count << endl;
+//		terminate = true;
+//	}
 
 
-	// Delete dynamically allocated memory
-	//delete[] parents;
-	//delete[] offsprings;
-	//delete[] fitness;
-	//delete[] best_circuit;
-
-	system("pause");
-	return 0;
-}
+//
+//
+//	// Delete dynamically allocated memory
+//	//delete[] parents;
+//	//delete[] offsprings;
+//	//delete[] fitness;
+//	//delete[] best_circuit;
+//
+//	system("pause");
+//	return 0;
+//}
 
 int main2(int argc, char * argv[])
 {
