@@ -4,6 +4,7 @@
 #include "CUnit.h"
 #include "CCircuit.h"
 #include "CStream.h"
+#include <omp.h>
 //#define DEBUG
 
 using namespace std;
@@ -11,14 +12,15 @@ using namespace std;
 // PROBLEM PARAMETERS
 int iter_max = 500;							// max number of iterations/generations
 double p_crossing = 0.9;					// probability of crossing over
-double p_mutation = 0.1;					// probability of mutation
-int no_units = 5;							// total number of units
+double p_mutation = 0.01;					// probability of mutation
+int no_units = 10;							// total number of units
 int no_circuits = 100;						// total number of initial circuits
 
 // INITIATE USEFUL VARIABLES AND ARRAYS
 int iter_count = 0;							// iterations counter
 int offspring_count = 0;					// offsprings per iterations counter
-int best_count = 0;							// count for how many generations the best circuit has been the same 
+int best_count = 0;	
+int best_count_lim = 200;						// count for how many generations the best circuit has been the same 
 double highest_fit;							// highest fitness value for each generation
 double highest_fit_prev;					// previous highest fitness value
 double* fitness;							// list to store the fitness values of all circuits
@@ -33,12 +35,27 @@ CCircuit best_circuit_prev(no_units);		// space to store the best circuit from p
 CCircuit parentA, parentB;					// objects to store the pair of parents for procriation
 CCircuit offspringA, offspringB;			// object to store the offpsrings from each pair of parents
 
-
 using namespace std;
 
 int main(int argc, char * argv[])
 {
+
+	omp_set_dynamic(0);
+	omp_set_num_threads(2);
+	
+	// Command line properties
+	if(argc < 4)
+	{
+		cout << endl << "Proper usage is Genetic_Algorithm <no_units> <iter_max> <best_count_lim> <p_mutation>" << endl;
+		cout<<"See documentation for further details" << endl;
+		return 1;
+	}
+
 	// Allocate memory and initialise parents and offsprings grid
+	no_units = stoi(argv[1]);
+	iter_max = stoi(argv[2]);
+	best_count_lim = stoi(argv[3]);
+	p_mutation = stod(argv[4]);
 	srand(time(NULL));
 	parents = new CCircuit[no_circuits];
 	offsprings = new CCircuit[no_circuits];
@@ -156,12 +173,13 @@ int main(int argc, char * argv[])
 		{
 			best_count++;
 		}
-		if (best_count >= 400) terminate = true;
+
+		if (best_count >= best_count_lim) terminate = true;
 	}
 
 	// Print out final result
 	cout << "\n FINAL CIRCUIT" << endl;
-	cout << " Iterations " << iter_count  - best_count<< ":" << endl;
+	cout << " Iterations " << iter_count  - best_count_lim<< ":" << endl;
 	cout << " Fitness: " << highest_fit << endl;
 	cout << " Circuit: "; best_circuit.printCircuit();
 	cout << endl;
