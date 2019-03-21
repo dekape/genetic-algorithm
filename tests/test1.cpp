@@ -4,6 +4,8 @@
 #include "CCircuit.h"
 #include "CStream.h"
 
+//check the checkValidity function
+
 int main(int argc, char * argv[]){
     //simple valid case
     int valid[3] = {0, 1, 2};
@@ -49,5 +51,5 @@ int main(int argc, char * argv[]){
     std::cout << "fail\n";
     else
     std::cout << "pass\n";
-    
+
 }

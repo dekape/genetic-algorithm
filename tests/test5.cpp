@@ -6,6 +6,13 @@
 #include "CCircuit.h"
 #include "Genetic_Algorithm.h"
 
+// check the functions used to generate offspring
+// this includes the following functions:
+//      generateCircuits
+//      pairParents
+//      createOffsprings
+//      swapGrids
+
  int main(int argc, char * argv[])
  {
      srand(time(NULL));

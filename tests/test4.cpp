@@ -6,6 +6,8 @@
 #include "CCircuit.h"
 #include "Genetic_Algorithm.h"
 
+//check the mutate function
+
 int main(int argc, char * argv[])
 {
 	double mute_limit = 1;

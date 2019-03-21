@@ -84,7 +84,6 @@ void generateCircuits(int no_units, int no_circuits, CCircuit* parents)
 		{
 			// Add circuit to parents grid
 			parents[valid_count] = Circuit;
-
 			// Increment number of valid circuits
 			valid_count++;
 		}
