@@ -55,7 +55,7 @@ void generateCircuits(int no_units, int no_circuits, CCircuit* parents)
 	// Generates random valid circuits and stores them as objects in parents array
 
 	int valid_count = 0;								// count of valid circuits
-	srand(time(NULL));									// set random seed
+	//srand(time(NULL));									// set random seed
 	int* circuit_array = new int[2 * no_units + 1];		// int array to store circuit generated
 	int indexConsenOut;									// unit index of the concentrate output
 	int indexTailingOut;								// unit index of the waste output
@@ -173,7 +173,6 @@ void pairParents(CCircuit *circuits, CCircuit &parentA, CCircuit &parentB, int n
 		}
 	}
 
-	
 	do
 	{
 		fitnessRef = 0; //clear the fitness reference

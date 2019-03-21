@@ -59,12 +59,13 @@
 
      parentA.initialise(no_units);
      parentB.initialise(no_units);
-
+    double totalfitness = 0;
      double * fitness = new double[no_circuits];
      for(int i=0;i<no_circuits;i++){
-         fitness[i] = 1;
+         fitness[i] = (double)rand()/RAND_MAX;
+         totalfitness += fitness[i];
      }
-     pairParents(parents, parentA, parentB, no_units, no_circuits, fitness, 0);
+     pairParents(parents, parentA, parentB, no_units, no_circuits, fitness, totalfitness);
 
      //check that the returned parentA and parentB comes from the parent list.
      //parentA check

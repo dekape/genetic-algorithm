@@ -1,4 +1,4 @@
-CXX = g++
+CXX = mpic++
 
 CXXFLAGS = -Wall -std=c++0x -fopenmp
 

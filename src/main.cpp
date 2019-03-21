@@ -6,6 +6,8 @@
 #include "CStream.h"
 #include <string>
 #include <omp.h>
+#include <string>
+#include <mpi.h>
 //#define DEBUG
 
 
@@ -13,7 +15,7 @@ using namespace std;
 
 // PROBLEM PARAMETERS
 int iter_max = 5000;						// max number of iterations/generations
-int no_threads = 1;							// number of OMP threads to be used in parallel
+int no_threads = 2;							// number of OMP threads to be used in parallel
 int no_units = 10;							// total number of units
 int no_circuits = 100;						// total number of initial circuits
 int best_count_lim = 500;					// how many generations of the same best circuit are required to terminate the loop
@@ -42,14 +44,21 @@ using namespace std;
 
 int main(int argc, char * argv[])
 {
+
+	int num_procs;
+	int proc_id;
+	MPI_Init(&argc, &argv);
+	MPI_Comm_rank(MPI_COMM_WORLD, &proc_id);
+	MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 	
 	// Command line properties
-	if (argc == 5)
+	if (argc == 6)
 	{
+		
 		//cout << endl << "Proper usage is Genetic_Algorithm <no_units> <iter_max> <best_count_lim> <p_mutation>" << endl;
 		//cout<<"See documentation for further details" << endl;
 		//return 1;
-
+		
 		if (stoi(argv[5]) <= 0)
 		{
 			cout << "\n Number of threads needs to positive \n";
@@ -67,7 +76,7 @@ int main(int argc, char * argv[])
 	omp_set_num_threads(no_threads);
 
 	// Allocate memory and initialise parents and offsprings grid
-	srand(time(NULL));
+	srand(10 * proc_id * time(NULL));
 	parents = new CCircuit[no_circuits];
 	offsprings = new CCircuit[no_circuits];
 	for (int i = 0; i < no_circuits; i++)
@@ -167,10 +176,10 @@ int main(int argc, char * argv[])
 		
 		// Update iteration, print current result to screen
 		iter_count++;
-		cout << " ITERATION " << iter_count << ":" << endl;
+		/*cout << " ITERATION " << iter_count << ":" << endl;
 		cout << " Fitness: " << highest_fit << endl;
 		cout << " Circuit: "; best_circuit.printCircuit();
-		cout << endl;
+		cout << endl;*/
 
 		// Evaluate termination if maximum amount of generations are reached
 		// or if best circuit hasn't changed for 200 iterations
@@ -190,12 +199,48 @@ int main(int argc, char * argv[])
 	}
 
 	// Print out final result
-	cout << "\n FINAL CIRCUIT" << endl;
+	cout << "\n Process: " << proc_id << endl;
+	cout << " FINAL CIRCUIT" << endl;
 	if(iter_count < iter_max) cout << " Iterations " << iter_count  - best_count_lim<< ":" << endl;
 	else cout << " Iterations " << iter_count << ":" << endl;
 	cout << " Fitness: " << highest_fit << endl;
 	cout << " Circuit: "; best_circuit.printCircuit();
 	cout << endl;
+
+	// Wait for all processes to finish their search
+	MPI_Barrier(MPI_COMM_WORLD);
+
+	// Struct for easy MPI_REDUCE usage
+	struct {
+		double fitness;
+		int index;
+	} in, out;
+	in.fitness = highest_fit;
+	in.index = proc_id;
+
+	// Reduce max fitness over all processes
+	MPI_Reduce(&in, &out, 1, MPI_DOUBLE_INT, MPI_MAXLOC, 0, MPI_COMM_WORLD);
+	// Let everyone know best processes ID
+	MPI_Bcast(&out.index, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+	// Print out final result for all processes
+	if (proc_id == 0) {
+		cout << "--------------------- OVERALL BEST CIRCUIT ----------------" << endl;
+		cout << "\n Process: " << out.index << endl;
+		cout << " FINAL CIRCUIT" << endl;
+		cout << " Fitness: " << out.fitness << endl;
+	}
+	// The best process gets the honour of printing its circuit
+	MPI_Barrier(MPI_COMM_WORLD);
+	if (proc_id == out.index) {
+		cout << " Circuit: "; best_circuit.printCircuit();
+	}
+	// Just so they print nicely :)
+	MPI_Barrier(MPI_COMM_WORLD);
+	if (proc_id == 0) {
+		cout << endl;
+		cout << "-----------------------------------------------------------" << endl;
+	}
 
 
 
@@ -205,6 +250,6 @@ int main(int argc, char * argv[])
 	delete[] fitness;
 	delete[] fitness_adjusted;
 
-	system("pause");
+	MPI_Finalize();
 	return 0;
 }
