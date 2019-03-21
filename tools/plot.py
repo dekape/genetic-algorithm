@@ -11,9 +11,9 @@ def label(x):
     if x<N:
         return 'Unit %s'%(x)  ## + 1
     elif x==N:
-        return 'Tailings'
-    else:
         return 'Concentrate'
+    else:
+        return 'Tailings'
 
 graph.attr(rankdir='LR')
 graph.attr('node', shape='rectangle')
