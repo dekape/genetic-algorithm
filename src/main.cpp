@@ -9,13 +9,6 @@
 
 using namespace std;
 
-<<<<<<< HEAD
-int iter_max = 500;							// max number of iterations
-double p_crossing = 0.9;						// probability of crossing over
-double p_mutation = 0.1;						// probability of mutation
-int no_units = 5;							// total number of units
-int no_circuits = 100;						// total number of initial circuits
-=======
 // PROBLEM PARAMETERS
 int iter_max = 500;							// max number of iterations/generations
 double p_crossing = 0.9;					// probability of crossing over
@@ -24,21 +17,12 @@ int no_units = 5;							// total number of units
 int no_circuits = 100;						// total number of initial circuits
 
 // INITIATE USEFUL VARIABLES AND ARRAYS
->>>>>>> debs
 int iter_count = 0;							// iterations counter
 int offspring_count = 0;					// offsprings per iterations counter
 int best_count = 0;							// count for how many generations the best circuit has been the same
 double highest_fit;							// highest fitness value for each generation
 double highest_fit_prev;					// previous highest fitness value
 double* fitness;							// list to store the fitness values of all circuits
-<<<<<<< HEAD
-double* fitness_adjusted;
-CCircuit* parents;							// 2D array to store all parent circuits
-CCircuit* offsprings;						// 2D array to store all offspring circuits
-CCircuit best_circuit(no_units);			// object to store best circuit based on fitness calculation
-CCircuit best_circuit_prev(no_units);
-CCircuit offspringA, offspringB;
-=======
 double* fitness_adjusted;					// adjusted fitness to relative fitness
 double totalFitness;						// absolute range of fitness values
 
@@ -50,7 +34,6 @@ CCircuit best_circuit_prev(no_units);		// space to store the best circuit from p
 CCircuit parentA, parentB;					// objects to store the pair of parents for procriation
 CCircuit offspringA, offspringB;			// object to store the offpsrings from each pair of parents
 
->>>>>>> debs
 
 using namespace std;
 /*
@@ -119,10 +102,7 @@ int main(int argc, char * argv[])
 		parents[i].initialise(no_units);
 		offsprings[i].initialise(no_units);
 	}
-<<<<<<< HEAD
-=======
 
->>>>>>> debs
 
 	// Generate random valid circuits, store in parents
 	generateCircuits(no_units, no_circuits, parents);

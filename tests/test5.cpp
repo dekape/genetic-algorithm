@@ -106,33 +106,23 @@
      CCircuit childB;
 
      //set mutation and crossover limit to 0, all children will be a copy of the parent
-     createOffsprings(parents, childA, childB, no_units, no_circuits, 0, fitness, 0, 0);
-
+     createOffsprings(parentA, parentB, childA, childB, no_units, no_circuits, 0, fitness, 0, 0);
+     
      //check childA
-     for(int i=0;i<no_circuits;i++){
-         for(int j=0;j<2 * no_units + 1;j++){
-             // std::cout << i << " " << j << std::endl;
-             if(childA.circuit_ints[j] == parents[i].circuit_ints[j]) ca_in = true;
-             else
-             {
-                 break;
-             }
-         }
-         if(ca_in){
+     for(int j=0;j<2 * no_units + 1;j++){
+         // std::cout << i << " " << j << std::endl;
+         if(childA.circuit_ints[j] == parentA.circuit_ints[j]) ca_in = true;
+         else
+         {
              break;
          }
      }
      //check childB
-     for(int i=0;i<no_circuits;i++){
-         for(int j=0;j<2 * no_units + 1;j++){
-             // std::cout << i << " " << j << std::endl;
-             if(childB.circuit_ints[j] == parents[i].circuit_ints[j]) cb_in = true;
-             else
-             {
-                 break;
-             }
-         }
-         if(cb_in){
+     for(int j=0;j<2 * no_units + 1;j++){
+         // std::cout << i << " " << j << std::endl;
+         if(childB.circuit_ints[j] == parentB.circuit_ints[j]) cb_in = true;
+         else
+         {
              break;
          }
      }

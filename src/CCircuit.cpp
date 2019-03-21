@@ -235,8 +235,8 @@ void unitArrayToVector(CUnit *unit_array, vector<CUnit> &unit_vector, int num_un
 }
 
 
-double balance_mass(CCircuit circuit_obj, double tol = 10e-7, double value_weight = 100, double waste_weight = 500,
-					double circuit_value_feed = 10, double circuit_waste_feed = 100) {
+double balance_mass(CCircuit circuit_obj, double tol, double value_weight, double waste_weight,
+					double circuit_value_feed, double circuit_waste_feed) {
 	/* Calculate fitness value of circuit.
 	Parameters
 	----------
@@ -275,11 +275,6 @@ double balance_mass(CCircuit circuit_obj, double tol = 10e-7, double value_weigh
 		circuit[i].curr_in_feed.waste = circuit_waste_feed;
 	}
 
-
-	double value_change;
-	double waste_change;
-	double max_value_change;
-	double max_waste_change;
 	double max_total_change = tol + 1;
 	// Keep going until convergence
 	int num_iterations = 0;
@@ -360,7 +355,7 @@ double balance_mass(CCircuit circuit_obj, double tol = 10e-7, double value_weigh
 	double fitness_score;
 	if (num_iterations >= 500)
 	{
-		fitness_score = -feed_waste * waste_weight;
+		fitness_score = -circuit_waste_feed * waste_weight;
 	}
 	else
 	{

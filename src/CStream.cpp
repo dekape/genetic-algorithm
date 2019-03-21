@@ -32,16 +32,6 @@ CStream &CStream::operator+=(CStream &rhs) {
 	return *this;
 }
 
-CStream &CStream::operator=(CStream &rhs)
-{
-	if (this != &rhs)
-	{
-		value = rhs.value;
-		waste = rhs.waste;
-	}
-
-	return *this;
-}
 
 // Equals operator overload
 CStream &CStream::operator=(CStream &rhs)
