@@ -4,6 +4,7 @@
 #include "CUnit.h"
 #include "CCircuit.h"
 #include "CStream.h"
+#include <omp.h>
 //#define DEBUG
 
 using namespace std;
@@ -12,7 +13,7 @@ using namespace std;
 int iter_max = 500;							// max number of iterations/generations
 double p_crossing = 0.9;					// probability of crossing over
 double p_mutation = 0.01;					// probability of mutation
-int no_units = 5;							// total number of units
+int no_units = 10;							// total number of units
 int no_circuits = 100;						// total number of initial circuits
 
 // INITIATE USEFUL VARIABLES AND ARRAYS
@@ -34,11 +35,14 @@ CCircuit best_circuit_prev(no_units);		// space to store the best circuit from p
 CCircuit parentA, parentB;					// objects to store the pair of parents for procriation
 CCircuit offspringA, offspringB;			// object to store the offpsrings from each pair of parents
 
-
 using namespace std;
 
 int main(int argc, char * argv[])
 {
+
+	omp_set_dynamic(0);
+	omp_set_num_threads(2);
+
 	// Allocate memory and initialise parents and offsprings grid
 	if(argc < 4)
 	{
