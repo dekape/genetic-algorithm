@@ -57,7 +57,7 @@
      for(int i=0;i<no_circuits;i++){
          fitness[i] = 1;
      }
-     pairParents(parents, parentA, parentB, no_units, no_circuits, fitness);
+     pairParents(parents, parentA, parentB, no_units, no_circuits, fitness, 0);
 
      //check that the returned parentA and parentB comes from the parent list.
      //parentA check
@@ -99,7 +99,7 @@
      CCircuit childB;
 
      //set mutation and crossover limit to 0, all children will be a copy of the parent
-     createOffsprings(parents, childA, childB, no_units, no_circuits, 0, 0, fitness);
+     createOffsprings(parents, childA, childB, no_units, no_circuits, 0, fitness, 0, 0);
 
      //check childA
      for(int i=0;i<no_circuits;i++){

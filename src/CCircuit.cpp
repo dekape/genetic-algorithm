@@ -88,11 +88,7 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int
 
 	//if its next unit is not an exit, mark it
 	if (units[unit_num].conc_num < num_units) {
-<<<<<<< HEAD
 		markUnits(units[unit_num].conc_num, units, conc_exit, tail_exit, num_units); //go to
-=======
-		markUnits(units[unit_num].conc_num, units, conc_exit, tail_exit, num_units); //go to
->>>>>>> frank
 	}
 	else {
 		if(units[unit_num].conc_num == num_units)
@@ -101,11 +97,7 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int
 			}
 		// ...Potentially do something to indicate that you have seen an exit
 	}
-<<<<<<< HEAD
 	//If tails_num does not point at a circuit outlet recursively call the function
-=======
-	//If tails_num does not point at a circuit outlet recursively call the function
->>>>>>> frank
 
 	//if its next unit is not an exit, mark it
 	if (units[unit_num].tail_num < num_units) {
@@ -132,9 +124,9 @@ void resetMarks(CUnit *units, int no_units)
 bool checkValidity(CCircuit circuit)
 {
 	int no_units = circuit.no_units;
-	CUnit* circuit_units = circuit.circuit_units;
-	int *int_array = circuit.circuit_ints;
-	bool conc_exit(false), tail_exit(false);
+    CUnit* circuit_units = circuit.circuit_units;
+    int *int_array = circuit.circuit_ints;
+    bool conc_exit(false), tail_exit(false);
 
 	resetMarks(circuit_units, no_units);
 	markUnits(int_array[0], circuit_units, conc_exit, tail_exit, no_units); //units[0].id
