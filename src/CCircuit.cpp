@@ -2,20 +2,16 @@
 #include "Genetic_Algorithm.h"
 #include <algorithm>
 
-const double feed_valuable = 10;
-const double feed_waste = 100;
-
-const double valuable_value = 100;
-const double waste_value = -500;
-
 using namespace std;
 
+// Nullptr constructor
 CCircuit::CCircuit()
 {
 	this->circuit_ints = nullptr;
 	this->circuit_units = nullptr;
 }
 
+// Number of units initialisation and memory allocation
 void CCircuit::initialise(int no_units)
 {
 	this->feed_id = -1;
@@ -24,6 +20,7 @@ void CCircuit::initialise(int no_units)
 	this->circuit_units = new CUnit[no_units];
 }
 
+// Number of units initialisation and memory allocation as a constructor
 CCircuit::CCircuit(int no_units)
 {
 	this->feed_id = -1;
@@ -32,6 +29,7 @@ CCircuit::CCircuit(int no_units)
 	this->circuit_units = new CUnit[no_units];
 }
 
+// Int_array constructor
 CCircuit::CCircuit(int no_units, int* circuit_array)
 {
 	this->feed_id = circuit_array[0];
@@ -43,6 +41,7 @@ CCircuit::CCircuit(int no_units, int* circuit_array)
 	intArrayToUnits(circuit_array, this->circuit_units, no_units);
 }
 
+// Unit_array constructor
 CCircuit::CCircuit(int no_units, int feed, CUnit* circuit_array)
 {
 	this->feed_id = feed;
@@ -56,10 +55,11 @@ CCircuit::CCircuit(int no_units, int feed, CUnit* circuit_array)
 
 CCircuit::~CCircuit()
 {
-	//delete[] circuit_ints;
-	//delete[] circuit_units;
+	delete[] circuit_ints;
+	delete[] circuit_units;
 }
 
+// Copy Constructor
 CCircuit::CCircuit(CCircuit &other)
 {
 	this->feed_id = other.feed_id;
@@ -73,6 +73,29 @@ CCircuit::CCircuit(CCircuit &other)
 		circuit_units[i] = other.circuit_units[i];
 }
 
+// Equals operator overload
+CCircuit &CCircuit::operator=(const CCircuit &other)
+{
+	if (this != &other)
+	{
+		delete[] circuit_ints;
+		delete[] circuit_units;
+
+		feed_id = other.feed_id;
+		no_units = other.no_units;
+		circuit_ints = new int[no_units * 2 + 1];
+		circuit_units = new CUnit[no_units];
+
+		for (int i = 0; i < no_units * 2 + 1; i++)
+			circuit_ints[i] = other.circuit_ints[i];
+		for (int i = 0; i < no_units; i++)
+			circuit_units[i] = other.circuit_units[i];
+	}
+
+	return *this;
+}
+
+// Prints circuit as int_array: Feed: Unit1(concetrate, tail) Unit2(concentrate, tail)...
 void CCircuit::printCircuit()
 {
 	for (int j = 0; j < 2 * this->no_units + 1; j++)
@@ -82,10 +105,14 @@ void CCircuit::printCircuit()
 	cout << endl;
 }
 
+
 void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int num_units) {
-	//if marked, dont bother
+	// Marks units as visited or not visited in a circuit, stores in conc_exit and tail_exit if circuit has these exits
+
+	// If already visited, return
 	if (units[unit_num].mark)return;
-	//mark it as visited
+
+	// If not already visited, mark as visited
 	units[unit_num].mark = true;
 
 	//If we have seen this unit already exit
@@ -100,8 +127,7 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int
 		if(units[unit_num].conc_num == num_units)
 		{
 			conc_exit = true;
-			}
-		// ...Potentially do something to indicate that you have seen an exit
+		}
 	}
 	//If tails_num does not point at a circuit outlet recursively call the function
 
@@ -113,13 +139,13 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int
 		if(units[unit_num].tail_num == num_units + 1)
 		{
 			tail_exit = true;
-			}
-		// ...Potentially do something to indicate that you have seen an exit
+		}
 	}
 }
 
 void resetMarks(CUnit *units, int no_units)
 {
+	// Resets all units from units array to unvisited
   for(int i = 0; i < no_units; i++)
   {
     units[i].mark = false;
@@ -129,19 +155,31 @@ void resetMarks(CUnit *units, int no_units)
 
 bool checkValidity(CCircuit circuit)
 {
-	int no_units = circuit.no_units;
-    CUnit* circuit_units = circuit.circuit_units;
-    int *int_array = circuit.circuit_ints;
-    bool conc_exit(false), tail_exit(false);
+	// Returns true if a circuit is valid
 
+	// Get number of units
+	int no_units = circuit.no_units;
+
+	// Get units array and int array
+	CUnit* circuit_units = circuit.circuit_units;
+	int *int_array = circuit.circuit_ints;
+
+	// Checks if there are a concentration and a waste exit for the circuit
+	bool conc_exit(false), tail_exit(false);
+
+	// Reset units mark to false (mark all units as unvisited)
 	resetMarks(circuit_units, no_units);
+
+	// Check if you can access the exits from the feed
 	markUnits(int_array[0], circuit_units, conc_exit, tail_exit, no_units); //units[0].id
-	//if not traversed to exit
+
+	// If no exits for concentrate and waste, set circuit as invalid
 	if (!conc_exit || !tail_exit)
 	{
 		return false;
 	}
-	//check traverse every one
+
+	// Check circuit traverse every unit
 	for (int i = 0; i < no_units; i++)
 	{
 		if (!circuit_units[i].mark)
@@ -149,30 +187,35 @@ bool checkValidity(CCircuit circuit)
 			return false;
 		}
 	}
+
+	// Check each unit can access both exits
 	for (int i = 1; i < 2 * no_units + 1; i += 2)
 	{
-		//reset flags
+		// Checks for self recycling
 		if (int_array[i] == i / 2 || int_array[i + 1] == i / 2)
-			//if(units[j].conc_num == i || units[j].tails_num == i)
 		{
 			return false;
 		}
-		//do mark units
-		//if exits go to same place
+
+		// Checks if exits go to same place
 		if (int_array[i] == int_array[i + 1])
-			//if(units[j].conc_num == units[j].tails_num)
 		{
 			return false;
 		}
-		conc_exit = false; tail_exit = false; resetMarks(circuit_units, no_units);
+
+		// Set all back to false,
+		conc_exit = false;
+		tail_exit = false;
+		resetMarks(circuit_units, no_units);
+
+		// Check if you can access both exits from current unit
 		markUnits(i / 2, circuit_units, conc_exit, tail_exit, no_units);
+
+		// If doesn't have both exits, invalid circuit
 		if (!conc_exit || !tail_exit)
 		{
 			return false;
 		}
-		//if conc goes to itself, tails goes to itself
-
-		//if not traversed at all
 	}
 	return true;
 }
@@ -192,8 +235,8 @@ void unitArrayToVector(CUnit *unit_array, vector<CUnit> &unit_vector, int num_un
 }
 
 
-
-double balance_mass(CCircuit circuit_obj, double tol) {
+double balance_mass(CCircuit circuit_obj, double tol = 10e-7, double value_weight = 100, double waste_weight = 500,
+					double circuit_value_feed = 10, double circuit_waste_feed = 100) {
 	/* Calculate fitness value of circuit.
 	Parameters
 	----------
@@ -201,6 +244,15 @@ double balance_mass(CCircuit circuit_obj, double tol) {
 		Circuit for which fitness should be calculated
 	double tol: value greater than 0
 		Tolerance under which we accept circuit has converged
+	double value_weight: default value = 100
+		Weighting for value output for fitness calculations
+	double waste_weight: default value = 500
+		Weighting for waste output for fitness calculations
+	double circuit_value_feed: dafault value = 10
+		Mass of valueable fed into circuit
+	double circuit_value_feed: dafault value = 100
+		Mass of waste fed into circuit
+
 	Returns
 	-------
 	double fitness_score:
@@ -219,8 +271,8 @@ double balance_mass(CCircuit circuit_obj, double tol) {
 	// Set all input feeds to 10-100 - initial guess
 	for (int i = 0; i < num_units; i++) {
 		// Current feeds
-		circuit[i].curr_in_feed.value = 10;
-		circuit[i].curr_in_feed.waste = 100;
+		circuit[i].curr_in_feed.value = circuit_value_feed;
+		circuit[i].curr_in_feed.waste = circuit_waste_feed;
 	}
 
 
@@ -253,8 +305,8 @@ double balance_mass(CCircuit circuit_obj, double tol) {
 		}
 
 		// Reset circuit feed to 10-100
-		circuit[feed_index].curr_in_feed.value = 10;
-		circuit[feed_index].curr_in_feed.waste = 100;
+		circuit[feed_index].curr_in_feed.value = circuit_value_feed;
+		circuit[feed_index].curr_in_feed.waste = circuit_waste_feed;
 
 		// Add all the output feeds of each cell to the
 		// inputs of the cells they point to
@@ -308,7 +360,7 @@ double balance_mass(CCircuit circuit_obj, double tol) {
 	double fitness_score;
 	if (num_iterations >= 500)
 	{
-		fitness_score = feed_waste * waste_value;
+		fitness_score = -feed_waste * waste_weight;
 	}
 	else
 	{
@@ -322,10 +374,8 @@ double balance_mass(CCircuit circuit_obj, double tol) {
 		}
 
 		// Calculate weighted fitness value based on masses
-		fitness_score = (circuit_value * 100)
-			- (circuit_waste * 500);
+		fitness_score = (circuit_value * value_weight)
+			- (circuit_waste * waste_weight);
 	}
 	return fitness_score;
-
-
 }

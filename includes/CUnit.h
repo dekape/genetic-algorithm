@@ -11,11 +11,11 @@ public:
 
 	CUnit(int id, int conc_num, int tail_num);
 
-	//index of the unit to which this unit�s concentrate stream is connected 
+	//index of the unit to which this unit�s concentrate stream is connected
 	int conc_num = -1;
-	//index of the unit to which this unit�s concentrate stream is connected 
+	//index of the unit to which this unit�s concentrate stream is connected
 	int tail_num = -1;
-	//A Boolean that is changed to true if the unit has been seen 
+	//A Boolean that is changed to true if the unit has been seen
 	bool mark = false;
 
 	// Unit id number
@@ -42,5 +42,6 @@ public:
 
 		return *this;
 	}
+
 };
 #endif // !CUNIT_H
