@@ -156,7 +156,7 @@ int main(int argc, char * argv[])
 		{
 			best_count++;
 		}
-		if (best_count >= 200) terminate = true;
+		if (best_count >= 400) terminate = true;
 	}
 
 	// Print out final result
