@@ -83,7 +83,7 @@ void generateCircuits(int no_units, int no_circuits, CCircuit* parents)
 		{
 			// Add circuit to parents grid
 			parents[valid_count] = Circuit;
-
+      
 			// Increment number of valid circuits
 			valid_count++;
 		}
@@ -92,6 +92,7 @@ void generateCircuits(int no_units, int no_circuits, CCircuit* parents)
 
 	delete[] circuit_array;
 }
+
 
 
 void crossOver(int *circuitA, int *circuitB, int no_unit, double p_crossing)
@@ -278,3 +279,6 @@ double adjustFitness(double* fitness, double* fitness_adjusted, int no_circuits)
 
 	return totalFitness;
 }
+
+
+

@@ -42,5 +42,6 @@ public:
 
 		return *this;
 	}
+
 };
 #endif // !CUNIT_H
