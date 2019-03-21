@@ -6,7 +6,8 @@ This program employs a Genetic Algorithm to optimise a simple model for a minera
 
 # Usage
 ## Dependencies
- - OpenMP
+ - OpenMP (OpenMP 5.0 or later)
+ - MPI (MS-MPI or MPICH)
  - C++ compiler (g++, intel, Visual Studio (Windows))
 ## Install/Make
 ### Linux
@@ -23,7 +24,7 @@ To compile, one can use GNUWin (and make as above) or open the files in Visual S
 
 The program can be executed with:
 
-$bin/Genetic_Algorithm <no_units> <iter_max> <best_count_lim> <p_mutation>. The options are detailed below:
+$bin/Genetic_Algorithm <no_units> <iter_max> <best_count_lim> <p_mutation> <no_threads>. The options are detailed below:
 
  <no_units> The number of units in the circuit to be optimised.
 
@@ -32,6 +33,8 @@ $bin/Genetic_Algorithm <no_units> <iter_max> <best_count_lim> <p_mutation>. The 
  <best_count_lim> The number of iterations the program should run for without the best fit value changing. For example if the best fit doesn't change for <best_count_lim> iterations, the program will return as it thinks it has converged. This option needs to be thought about, as it will converge to minima throughout.
  
  <p_mutation> The probability per iteration of a unit in a circuit to mutate. 1 = every cell will mutate every time, 0, every cell will never mutate.
+ 
+ <no_threads> The number of (OpenMP) threads to run with in certain functions
 
 Some example configurations are listed below:
 
@@ -42,3 +45,7 @@ Some example configurations are listed below:
  15 | 5000 | 1000 | 0.01
 
 As you can see, 0.01 is a good choice for p_mutation. The effect of this is shown in the technical report.
+
+Individual iterations are not printed (clutter) but the final result of each processes simulation is, and then the best circuit from all of the processes is chosen automatically and printed. 
+
+
