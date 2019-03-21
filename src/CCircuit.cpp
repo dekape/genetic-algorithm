@@ -36,10 +36,10 @@ CCircuit::CCircuit(int no_units, int* circuit_array)
 {
 	this->feed_id = circuit_array[0];
 	this->no_units = no_units;
-	if (circuit_ints == nullptr) this->circuit_ints = new int[2 * no_units + 1];
+	this->circuit_ints = new int[2 * no_units + 1];
 	for (int i = 0; i < 2 * no_units + 1; i++)
 		this->circuit_ints[i] = circuit_array[i];
-	if (circuit_units == nullptr) this->circuit_units = new CUnit[no_units];
+	this->circuit_units = new CUnit[no_units];
 	intArrayToUnits(circuit_array, this->circuit_units, no_units);
 }
 

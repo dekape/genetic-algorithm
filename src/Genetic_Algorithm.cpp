@@ -8,7 +8,7 @@ void intArrayToUnits(int *int_array, CUnit *circuit, int no_units)
 	{
         circuit[i/2].conc_num = int_array[i];
         circuit[i/2].tail_num = int_array[i + 1];
-		circuit[i / 2].id = i / 2;
+		circuit[i/2].id = i / 2;
     }
 }
 
