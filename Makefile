@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall -std=c++0x -fopenmp
+CXXFLAGS = -Wall -std=c++0x
 LDFLAGS =
 SOURCE_DIR = src
 INCLUDE_DIR = includes
@@ -18,7 +18,7 @@ all: Genetic_Algorithm
 Genetic_Algorithm: $(BIN_DIR)/Genetic_Algorithm
 
 $(BIN_DIR)/Genetic_Algorithm: $(BUILD_DIR)/Genetic_Algorithm.o $(BUILD_DIR)/CCircuit.o $(BUILD_DIR)/main.o $(BUILD_DIR)/CUnit.o $(BUILD_DIR)/CStream.o
-	$(CXX) -o $@ $^
+	$(CXX) -o $@ $^ -fopenmp
 
 $(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.cpp $(INCLUDE_DIR)/*.h | directories
 	$(CXX) $(CPPFLAGS) -o $@ -c $< $(CXXFLAGS) -I$(INCLUDE_DIR)
