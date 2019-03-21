@@ -4,17 +4,25 @@
 #include "CUnit.h"
 #include "CCircuit.h"
 #include "CStream.h"
-#include <omp.h>
+
+#include <fstream>
+
+#define STATS
+string stat_file = "stats.csv";
+string special_case_file = "special_case.csv";
+//#include <omp.h>
 //#define DEBUG
 
 using namespace std;
 
 // PROBLEM PARAMETERS
-int iter_max = 500;							// max number of iterations/generations
+int iter_max = 5000;						// max number of iterations/generations
 double p_crossing = 0.9;					// probability of crossing over
 double p_mutation = 0.01;					// probability of mutation
 int no_units = 10;							// total number of units
 int no_circuits = 100;						// total number of initial circuits
+double value_weight = 100;                  // profit per output
+double waste_weight = 500;                  // penalty per output
 
 // INITIATE USEFUL VARIABLES AND ARRAYS
 int iter_count = 0;							// iterations counter
@@ -94,13 +102,14 @@ int main(int argc, char * argv[])
 int main(int argc, char * argv[])
 {
 
-	omp_set_dynamic(0);
-	omp_set_num_threads(2);
+//    omp_set_dynamic(0);
+//    omp_set_num_threads(2);
 	
 	// Command line properties
-	if(argc < 4)
+	if(argc < 6)
 	{
-		cout << endl << "Proper usage is Genetic_Algorithm <no_units> <iter_max> <best_count_lim> <p_mutation>" << endl;
+        cout << endl << "Proper usage is Genetic_Algorithm <no_units> <iter_max> <best_count_lim> <p_mutation> <p_crossing> <no_circuits>" << endl;
+        cout << "Additional argument: <value_weight> <waste_weight>" << endl;
 		cout<<"See documentation for further details" << endl;
 		return 1;
 	}
@@ -110,6 +119,12 @@ int main(int argc, char * argv[])
 	iter_max = stoi(argv[2]);
 	best_count_lim = stoi(argv[3]);
 	p_mutation = stod(argv[4]);
+    p_crossing = stod(argv[5]);
+    no_circuits = stod(argv[6]);
+    if(argc == 9){
+        value_weight = stod(argv[7]);
+        waste_weight = stod(argv[8]);
+    }
 	srand(time(NULL));
 	parents = new CCircuit[no_circuits];
 	offsprings = new CCircuit[no_circuits];
@@ -147,7 +162,8 @@ int main(int argc, char * argv[])
 		// Calculate fitness of all parent circuits
 		for (int i = 0; i < no_circuits; i++)
 		{
-			fitness[i] = balance_mass(parents[i], 1e-6);
+//            fitness[i] = balance_mass(parents[i], 1e-6);
+            fitness[i] = balance_mass(parents[i], 1e-6, value_weight, waste_weight);
  		}
 #ifdef DEBUG
 		cout << "FITNESS:" << endl;
@@ -224,10 +240,10 @@ int main(int argc, char * argv[])
 
 		// Update iteration, print current result to screen
 		iter_count++;
-		cout << " ITERATION " << iter_count << ":" << endl;
-		cout << " Fitness: " << highest_fit << endl;
-		cout << " Circuit: "; best_circuit.printCircuit();
-		cout << endl;
+//        cout << " ITERATION " << iter_count << ":" << endl;
+//        cout << " Fitness: " << highest_fit << endl;
+//        cout << " Circuit: "; best_circuit.printCircuit();
+//        cout << endl;
 
 		// Evaluate termination if maximum amount of generations are reached
 		// or if best circuit hasn't changed for 200 iterations
@@ -253,12 +269,28 @@ int main(int argc, char * argv[])
 	cout << " Circuit: "; best_circuit.printCircuit();
 	cout << endl;
 
+#ifdef STATS
+    
+    //write out the best result to a file to keep the parameter and stats
+    ofstream myfile;
+    cout << "write to file " << stat_file << endl;
+//    myfile.open (special_case_file, ios::out | ios::app);
+    myfile.open (stat_file, ios::out | ios::app);
+    myfile << iter_count << "," << highest_fit << ",";
+    for(int i=0;i<2 * no_units + 1;i++){
+        myfile << best_circuit.circuit_ints[i] << " ";
+    }
+    myfile << "," << no_units << "," << iter_max << "," << best_count_lim << "," << p_mutation << "," << p_crossing << "," << no_circuits << "," << value_weight << "," << waste_weight << endl;
+    myfile.close();
+    
+#endif
+    
 	// Delete dynamically allocated memory
 	delete[] parents;
 	delete[] offsprings;
 	delete[] fitness;
 	delete[] fitness_adjusted;
 
-	system("pause");
+//    system("pause");
 	return 0;
 }

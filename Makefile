@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall -std=c++0x -fopenmp
+CXXFLAGS = -Wall -std=c++0x #-fopenmp
 LDFLAGS =
 SOURCE_DIR = src
 INCLUDE_DIR = includes

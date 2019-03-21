@@ -1,7 +1,7 @@
 #include "CCircuit.h"
 #include "Genetic_Algorithm.h"
 #include <algorithm>
-#include <omp.h>
+//#include <omp.h>
 
 using namespace std;
 
@@ -269,7 +269,7 @@ double balance_mass(CCircuit circuit_obj, double tol, double value_weight, doubl
 		max_total_change = 0;
 
 		// Calculate flowrate of all components
-		#pragma omp parallel for
+//        #pragma omp parallel for
 		for (int i = 0; i < num_units; i++) {
 			// Calculate values of concentrate stream
 			circuit_obj.circuit_units[i].conc.value = 0.2 * circuit_obj.circuit_units[i].curr_in_feed.value;
