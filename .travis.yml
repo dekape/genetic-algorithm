@@ -3,11 +3,14 @@ dist: xenial
 language: cpp
 compiler:
   - gcc
+env:
+  - OMP_NUM_THREADS=4
 python:
   - "3.7"
 # Change this to your needs
 before_install:
-  - sudo apt-get install -y openmpi-bin openmpi-common libopenmpi-dev libopenmpi1.10
+
+  - sudo apt-get install -y openmpi-bin openmpi-common libopenmpi-dev libopenmpi1.10 libomp-dev
 script:
   - make clean
   - make all
