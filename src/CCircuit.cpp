@@ -2,6 +2,7 @@
 #include "Genetic_Algorithm.h"
 #include <algorithm>
 
+
 using namespace std;
 
 CCircuit::CCircuit()
@@ -255,6 +256,7 @@ double balance_mass(CCircuit circuit_obj, double tol) {
 		for (int i = 0; i < num_units; i++) {
 
 			// Else add to circuit total output feed
+
 			if (circuit[i].conc_num < num_units) {
 				circuit[circuit[i].conc_num].curr_in_feed += circuit[i].conc;
 			}

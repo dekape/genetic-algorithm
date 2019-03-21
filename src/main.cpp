@@ -8,6 +8,7 @@
 
 using namespace std;
 
+
 int iter_max = 500;							// max number of iterations
 double p_crossing = 0.9;						// probability of crossing over
 double p_mutation = 0.1;						// probability of mutation
@@ -23,6 +24,7 @@ CCircuit* offsprings;						// 2D array to store all offspring circuits
 CCircuit best_circuit(no_units);			// object to store best circuit based on fitness calculation
 CCircuit best_circuit_prev(no_units);
 CCircuit offspringA, offspringB;
+
 
 using namespace std;
 /*
@@ -101,8 +103,8 @@ int main(int argc, char * argv[])
 	double totalFitness;
 	while (!terminate)
 	{	
-
 		cout << "Iteration: " << iter_count << endl;
+    
 #ifdef DEBUG
 		cout << "PARENTS" << endl;
 		for (int i = 0; i < no_circuits; i++)
@@ -112,6 +114,7 @@ int main(int argc, char * argv[])
 
 		// Calculate fitness of all circuits
 		//computeFitness(parents, fitness, no_circuits);
+
 		//		for(int i = 0; i < no_circuits; i++)
 		//{
 		//	cout << fitness[i] << " ";
@@ -128,8 +131,9 @@ int main(int argc, char * argv[])
 		}
 		cout << endl;
 #endif //!DEBUG
-
+    // Reset offsppring count for new iteration
 		offspring_count = 0;
+    
 		//// Store highest fitness as offspring
 		selectBestCircuit(parents, fitness, best_circuit, no_circuits, no_units);
 		offsprings[0] = best_circuit;
@@ -180,7 +184,6 @@ int main(int argc, char * argv[])
 #endif // DEBUG
 	
 		// Swap offsprings with parents
-
 		swapGrids(parents, offsprings, no_circuits);
 
 		
@@ -200,7 +203,8 @@ int main(int argc, char * argv[])
 	}
 
 	cout << " PARENT: " << endl;
-   	offsprings[0].printCircuit();
+  offsprings[0].printCircuit();
+
 
 	// Delete dynamically allocated memory
 	delete[] parents;

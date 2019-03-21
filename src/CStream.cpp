@@ -32,7 +32,6 @@ CStream &CStream::operator+=(CStream &rhs) {
     
     // return the reference to this modified stream
 	return *this;
-}
 
 CStream &CStream::operator=(CStream &rhs)
 {
