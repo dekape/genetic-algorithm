@@ -2,6 +2,12 @@
 #include "Genetic_Algorithm.h"
 #include <algorithm>
 
+const double feed_valuable = 10;
+const double feed_waste = 100;
+
+const double valuable_value = 100;
+const double waste_value = -500;
+
 using namespace std;
 
 CCircuit::CCircuit()
@@ -225,7 +231,7 @@ double balance_mass(CCircuit circuit_obj, double tol) {
 	double max_total_change = tol + 1;
 	// Keep going until convergence
 	int num_iterations = 0;
-	while (max_total_change > tol && num_iterations++ < 100)
+	while (max_total_change > tol && ++num_iterations < 500)
 	{
 		// Reset maximum change in feed values overall in circuit
 		max_total_change = 0;
@@ -298,19 +304,27 @@ double balance_mass(CCircuit circuit_obj, double tol) {
 
 	// If this unit isnt the last step in the circuit,
 	// then add to next units input feed
-	for (int i = 0; i < num_units; ++i)
+
+	double fitness_score;
+	if (num_iterations >= 500)
 	{
-		if (circuit[i].conc_num == num_units)
+		fitness_score = feed_waste * waste_value;
+	}
+	else
+	{
+		for (int i = 0; i < num_units; ++i)
 		{
-			circuit_value += circuit[i].conc.value;
-			circuit_waste += circuit[i].conc.waste;
+			if (circuit[i].conc_num == num_units)
+			{
+				circuit_value += circuit[i].conc.value;
+				circuit_waste += circuit[i].conc.waste;
+			}
 		}
 
+		// Calculate weighted fitness value based on masses
+		fitness_score = (circuit_value * 100)
+			- (circuit_waste * 500);
 	}
-
-	// Calculate weighted fitness value based on masses
-	double fitness_score = (circuit_value * 100)
-		- (circuit_waste * 500);
 	return fitness_score;
 
 
