@@ -2,12 +2,6 @@
 #include "Genetic_Algorithm.h"
 #include <algorithm>
 
-const double feed_valuable = 10;
-const double feed_waste = 100;
-
-const double valuable_value = 100;
-const double waste_value = -500;
-
 using namespace std;
 
 // Nullptr constructor
@@ -241,7 +235,8 @@ void unitArrayToVector(CUnit *unit_array, vector<CUnit> &unit_vector, int num_un
 }
 
 
-double balance_mass(CCircuit circuit_obj, double tol) {
+double balance_mass(CCircuit circuit_obj, double tol = 10e-7, double value_weight = 100, double waste_weight = 500,
+					double circuit_value_feed = 10, double circuit_waste_feed = 100) {
 	/* Calculate fitness value of circuit.
 	Parameters
 	----------
@@ -249,6 +244,15 @@ double balance_mass(CCircuit circuit_obj, double tol) {
 		Circuit for which fitness should be calculated
 	double tol: value greater than 0
 		Tolerance under which we accept circuit has converged
+	double value_weight: default value = 100
+		Weighting for value output for fitness calculations
+	double waste_weight: default value = 500
+		Weighting for waste output for fitness calculations
+	double circuit_value_feed: dafault value = 10
+		Mass of valueable fed into circuit
+	double circuit_value_feed: dafault value = 100
+		Mass of waste fed into circuit
+
 	Returns
 	-------
 	double fitness_score:
@@ -267,8 +271,8 @@ double balance_mass(CCircuit circuit_obj, double tol) {
 	// Set all input feeds to 10-100 - initial guess
 	for (int i = 0; i < num_units; i++) {
 		// Current feeds
-		circuit[i].curr_in_feed.value = 10;
-		circuit[i].curr_in_feed.waste = 100;
+		circuit[i].curr_in_feed.value = circuit_value_feed;
+		circuit[i].curr_in_feed.waste = circuit_waste_feed;
 	}
 
 
@@ -301,8 +305,8 @@ double balance_mass(CCircuit circuit_obj, double tol) {
 		}
 
 		// Reset circuit feed to 10-100
-		circuit[feed_index].curr_in_feed.value = 10;
-		circuit[feed_index].curr_in_feed.waste = 100;
+		circuit[feed_index].curr_in_feed.value = circuit_value_feed;
+		circuit[feed_index].curr_in_feed.waste = circuit_waste_feed;
 
 		// Add all the output feeds of each cell to the
 		// inputs of the cells they point to
@@ -356,7 +360,7 @@ double balance_mass(CCircuit circuit_obj, double tol) {
 	double fitness_score;
 	if (num_iterations >= 500)
 	{
-		fitness_score = feed_waste * waste_value;
+		fitness_score = -feed_waste * waste_weight;
 	}
 	else
 	{
@@ -370,8 +374,8 @@ double balance_mass(CCircuit circuit_obj, double tol) {
 		}
 
 		// Calculate weighted fitness value based on masses
-		fitness_score = (circuit_value * 100)
-			- (circuit_waste * 500);
+		fitness_score = (circuit_value * value_weight)
+			- (circuit_waste * waste_weight);
 	}
 	return fitness_score;
 }
