@@ -26,7 +26,7 @@ public:
 	CStream curr_in_feed, old_in_feed,
 			conc, tail;
 
-
+  // Equals operator overload
 	CUnit &operator=(CUnit &other)
 	{
 		if (this != &other)

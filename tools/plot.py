@@ -14,7 +14,7 @@ N = (len(vec)-1)//2
 
 def label(x):
     if x<N:
-        return 'Unit %s'%(x+1)
+        return 'Unit %s'%(x)  ## + 1
     elif x==N:
         return 'Concentrate'
     else:

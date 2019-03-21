@@ -27,7 +27,6 @@ public:
 	CUnit* circuit_units;
 };
 
-
 bool checkValidity(CCircuit circuit);
 
 void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int num_units);

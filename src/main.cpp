@@ -9,7 +9,6 @@
 //#define DEBUG
 
 
-
 using namespace std;
 
 // PROBLEM PARAMETERS

@@ -23,12 +23,12 @@ CStream CStream::operator+(CStream &rhs) {
 
 // In-place addition operator override
 CStream &CStream::operator+=(CStream &rhs) {
-
-	// Append the values and wastes
+	
+    // Append the values and wastes
 	value += rhs.value;
-	waste += rhs.waste;
-
-	// return the reference to this modified stream
+    waste += rhs.waste;
+    
+    // return the reference to this modified stream
 	return *this;
 }
 
