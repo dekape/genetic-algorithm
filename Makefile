@@ -28,7 +28,7 @@ clean:
 
 .PHONY: Genetic_Algorithm all clean
 
-TESTS = test1 test2 test3 test4 test5 
+TESTS = test1 test2 test3 test4 test5
 
 runtests: ${TESTS}
 	@python3 run_tests.py
