@@ -27,32 +27,32 @@ using namespace std;
 void altOffspring(int begin_range, int end_range, int step_size){
     for(int i=begin_range;i<end_range;i+=step_size){
         //do thing
-        
+
     }
 }
 
 void altCrossingRate(double min_rate, double max_rate, double step_size){
     for(double i=min_rate;i<max_rate;i+=step_size){
-        
+
     }
 }
 
 void altMutateRate(double min_rate, double max_rate, double step_size){
     for(double i=min_rate;i<max_rate;i+=step_size){
-        
+
     }
 }
 
 void altPenaltynReward(){
-    
+
 }
 
 int main(int argc, char * argv[])
 {
 
-    
-    
+
+
     //write stat to file
-    
-    
+
+
 }
