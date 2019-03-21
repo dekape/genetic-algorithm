@@ -10,14 +10,12 @@ CStream::~CStream() {}
 // Addition operator override
 CStream CStream::operator+(CStream &rhs) {
 
-	// Create new stream 
+    // Create new stream 
 	CStream out_stream;
-
-
-	// Add old streams into new stream
+	
+    // Add old streams into new stream
 	out_stream.value = value + out_stream.value;
-	out_stream.waste = waste + out_stream.waste;
-
+    out_stream.waste = waste + out_stream.waste;
 
 	return out_stream;
 }
@@ -32,4 +30,17 @@ CStream &CStream::operator+=(CStream &rhs) {
 
 	// return the reference to this modified stream
 	return *this;
+}
+
+// Equals operator overload
+CStream &CStream::operator=(CStream &rhs)
+{
+	if (this != &rhs)
+	{
+		value = rhs.value;
+		waste = rhs.waste;
+	}
+
+	return *this;
+
 }
