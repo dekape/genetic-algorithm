@@ -61,6 +61,7 @@ void generateCircuits(int no_units, int no_circuits, CCircuit* parents)
 	int indexTailingOut;								// unit index of the waste output
 	CCircuit Circuit(no_units);							// Circuit object to store the valid circuit
 
+
 	do
 	{
 		// Random index for concentrate and waste units, the first must be an odd number the second an even number
@@ -172,9 +173,10 @@ void pairParents(CCircuit *circuits, CCircuit &parentA, CCircuit &parentB, int n
 		}
 	}
 
-	fitnessRef = 0; //clear the fitness reference
+	
 	do
 	{
+		fitnessRef = 0; //clear the fitness reference
 		double ref2 = ((double)rand()) / RAND_MAX; //get another random number
 		double refNum2 = ref2 * totalFitness;
 
@@ -183,7 +185,8 @@ void pairParents(CCircuit *circuits, CCircuit &parentA, CCircuit &parentB, int n
 			fitnessRef += fitness[i]; //ignore the first choice
 			if (fitnessRef >= refNum2)
 			{
-				index2 = i;
+				if(index1 != i)		// make sure parentB is not the same as parentA
+					index2 = i;
 				break; //if it is equal, break anyways
 			}
 		}

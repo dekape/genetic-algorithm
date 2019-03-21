@@ -4,23 +4,27 @@
 #include "CUnit.h"
 #include "CCircuit.h"
 #include "CStream.h"
+#include <string>
 #include <omp.h>
 //#define DEBUG
+
+
 
 using namespace std;
 
 // PROBLEM PARAMETERS
-int iter_max = 500;							// max number of iterations/generations
-double p_crossing = 0.9;					// probability of crossing over
-double p_mutation = 0.01;					// probability of mutation
+int iter_max = 5000;						// max number of iterations/generations
+int no_threads = 1;							// number of OMP threads to be used in parallel
 int no_units = 10;							// total number of units
 int no_circuits = 100;						// total number of initial circuits
+int best_count_lim = 500;					// how many generations of the same best circuit are required to terminate the loop
+double p_crossing = 0.9;					// probability of crossing over
+double p_mutation = 0.01;					// probability of mutation
 
 // INITIATE USEFUL VARIABLES AND ARRAYS
 int iter_count = 0;							// iterations counter
 int offspring_count = 0;					// offsprings per iterations counter
-int best_count = 0;	
-int best_count_lim = 200;						// count for how many generations the best circuit has been the same 
+int best_count = 0;							// count for how many generations the best circuit has been the same 
 double highest_fit;							// highest fitness value for each generation
 double highest_fit_prev;					// previous highest fitness value
 double* fitness;							// list to store the fitness values of all circuits
@@ -39,23 +43,31 @@ using namespace std;
 
 int main(int argc, char * argv[])
 {
-
-	omp_set_dynamic(0);
-	omp_set_num_threads(2);
 	
 	// Command line properties
-	if(argc < 4)
+	if (argc == 5)
 	{
-		cout << endl << "Proper usage is Genetic_Algorithm <no_units> <iter_max> <best_count_lim> <p_mutation>" << endl;
-		cout<<"See documentation for further details" << endl;
-		return 1;
+		//cout << endl << "Proper usage is Genetic_Algorithm <no_units> <iter_max> <best_count_lim> <p_mutation>" << endl;
+		//cout<<"See documentation for further details" << endl;
+		//return 1;
+
+		if (stoi(argv[5]) <= 0)
+		{
+			cout << "\n Number of threads needs to positive \n";
+			return -1;
+		}
+
+		no_units = stoi(argv[1]);
+		iter_max = stoi(argv[2]);
+		best_count_lim = stoi(argv[3]);
+		p_mutation = stod(argv[4]);
+		no_threads = stoi(argv[5]);
 	}
 
+	omp_set_dynamic(0);
+	omp_set_num_threads(no_threads);
+
 	// Allocate memory and initialise parents and offsprings grid
-	no_units = stoi(argv[1]);
-	iter_max = stoi(argv[2]);
-	best_count_lim = stoi(argv[3]);
-	p_mutation = stod(argv[4]);
 	srand(time(NULL));
 	parents = new CCircuit[no_circuits];
 	offsprings = new CCircuit[no_circuits];
@@ -91,6 +103,7 @@ int main(int argc, char * argv[])
 
 
 		// Calculate fitness of all parent circuits
+#pragma omp parallel for
 		for (int i = 0; i < no_circuits; i++)
 		{
 			fitness[i] = balance_mass(parents[i], 1e-6);
@@ -179,10 +192,13 @@ int main(int argc, char * argv[])
 
 	// Print out final result
 	cout << "\n FINAL CIRCUIT" << endl;
-	cout << " Iterations " << iter_count  - best_count_lim<< ":" << endl;
+	if(iter_count < iter_max) cout << " Iterations " << iter_count  - best_count_lim<< ":" << endl;
+	else cout << " Iterations " << iter_count << ":" << endl;
 	cout << " Fitness: " << highest_fit << endl;
 	cout << " Circuit: "; best_circuit.printCircuit();
 	cout << endl;
+
+
 
 	// Delete dynamically allocated memory
 	delete[] parents;
