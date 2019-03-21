@@ -17,8 +17,6 @@ void intArrayToUnits(int *int_array, CUnit *circuit, int no_units);
 
 void generateCircuits(int no_units, int no_circuits, CCircuit* parents);
 
-void computeFitness(CCircuit* parents, double*fitness, int no_circuits);
-
 void crossOver(int *circuitA, int *circuitB, int no_units, double p_crossing);
 
 void mutate(int *circuit, int no_unit, double mute_limit);

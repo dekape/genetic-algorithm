@@ -40,10 +40,10 @@ CCircuit::CCircuit(int no_units, int* circuit_array)
 {
 	this->feed_id = circuit_array[0];
 	this->no_units = no_units;
-	if (circuit_ints == nullptr) this->circuit_ints = new int[2 * no_units + 1];
+	this->circuit_ints = new int[2 * no_units + 1];
 	for (int i = 0; i < 2 * no_units + 1; i++)
 		this->circuit_ints[i] = circuit_array[i];
-	if (circuit_units == nullptr) this->circuit_units = new CUnit[no_units];
+	this->circuit_units = new CUnit[no_units];
 	intArrayToUnits(circuit_array, this->circuit_units, no_units);
 }
 
@@ -65,6 +65,7 @@ CCircuit::~CCircuit()
 	delete[] circuit_units;
 }
 
+// Copy Constructor
 CCircuit::CCircuit(CCircuit &other)
 {
 	this->feed_id = other.feed_id;
@@ -78,6 +79,7 @@ CCircuit::CCircuit(CCircuit &other)
 		circuit_units[i] = other.circuit_units[i];
 }
 
+// Equals operator overload
 CCircuit &CCircuit::operator=(const CCircuit &other)
 {
 	if (this != &other)
@@ -99,6 +101,7 @@ CCircuit &CCircuit::operator=(const CCircuit &other)
 	return *this;
 }
 
+// Prints circuit as int_array: Feed: Unit1(concetrate, tail) Unit2(concentrate, tail)...
 void CCircuit::printCircuit()
 {
 	for (int j = 0; j < 2 * this->no_units + 1; j++)
@@ -108,8 +111,10 @@ void CCircuit::printCircuit()
 	cout << endl;
 }
 
+
 void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int num_units) {
-	
+	// Marks units as visited or not visited in a circuit, stores in conc_exit and tail_exit if circuit has these exits
+
 	// If already visited, return
 	if (units[unit_num].mark)return;
 	
@@ -146,6 +151,7 @@ void markUnits(int unit_num, CUnit *units, bool &conc_exit, bool &tail_exit, int
 
 void resetMarks(CUnit *units, int no_units)
 {
+	// Resets all units from units array to unvisited
   for(int i = 0; i < no_units; i++)
   {
     units[i].mark = false;
@@ -155,6 +161,8 @@ void resetMarks(CUnit *units, int no_units)
 
 bool checkValidity(CCircuit circuit)
 {
+	// Returns true if a circuit is valid
+
 	// Get number of units
 	int no_units = circuit.no_units;
 	
@@ -231,7 +239,6 @@ void unitArrayToVector(CUnit *unit_array, vector<CUnit> &unit_vector, int num_un
 	}
 
 }
-
 
 
 double balance_mass(CCircuit circuit_obj, double tol) {
@@ -367,6 +374,4 @@ double balance_mass(CCircuit circuit_obj, double tol) {
 			- (circuit_waste * 500);
 	}
 	return fitness_score;
-
-
 }

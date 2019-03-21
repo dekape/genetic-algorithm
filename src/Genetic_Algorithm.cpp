@@ -4,6 +4,8 @@ using namespace std;
 
 void intArrayToUnits(int *int_array, CUnit *circuit, int no_units)
 {
+	// Creates a circuit array of CUnits based on a circuit array of ints
+	// Stores in CUnit* circuit
     for(int i = 1; i < no_units*2; i+=2)
 	{
         circuit[i/2].conc_num = int_array[i];
@@ -14,6 +16,7 @@ void intArrayToUnits(int *int_array, CUnit *circuit, int no_units)
 
 void unitsToIntArray(int *int_array, int feed_id, CUnit *units_to_convert, int no_units)
 {
+	// Creates a circuit array of ints based on a circuit array of CUnits
 	//int_array is where to store answer
 	//CUnit * is array of CUnits
 	int_array[0] = feed_id; //source is always 0
@@ -21,18 +24,6 @@ void unitsToIntArray(int *int_array, int feed_id, CUnit *units_to_convert, int n
 	{
 		int_array[i] = units_to_convert[i / 2].conc_num;
 		int_array[i + 1] = units_to_convert[i / 2].tail_num;
-	}
-}
-
-
-void computeFitness(CCircuit* parents, double* fitness, int no_circuits)
-{
-	for (int i = 0; i < no_circuits; i++)
-	{
-		//cout << parents[i].circuit_units[0].curr_in_feed.value << " ";
-		fitness[i] = balance_mass(parents[i], 10e-7);
-		//cout << parents[i].circuit_units[0].curr_in_feed.value << " ";
-		cout << endl;
 	}
 }
 
@@ -113,6 +104,8 @@ void generateCircuits(int no_units, int no_circuits, CCircuit* parents)
 
 void crossOver(int *circuitA, int *circuitB, int no_unit, double p_crossing)
 {
+	// Performs the crossover between two circuits based on a p_crossing probability
+	// Crossed-over circuits are stored in place
 	double p_cross_rate = ((double)rand()) / RAND_MAX;
 	if(p_cross_rate <= p_crossing)
 	{
@@ -129,9 +122,9 @@ void crossOver(int *circuitA, int *circuitB, int no_unit, double p_crossing)
 
 void mutate(int *circuit, int no_unit, double mute_limit)
 {
+	// Performs mutation of each element in a circuit based on a mute_limit probability
+	// Mutated circuit is stored in place
 	double mute_rate; //come out a random rate
-
-	//double mute_limit = 0.01; //mutation probability
 
 	for (int i = 0; i < 2 * no_unit + 1; i++)
 	{
@@ -161,6 +154,7 @@ void mutate(int *circuit, int no_unit, double mute_limit)
 void pairParents(CCircuit *circuits, CCircuit &parentA, CCircuit &parentB, int no_units, 
 					int no_circuits, double* fitness, double totalFitness)
 {
+	// Selects two parents circuits from a range of circuits based on a linear probabilistic fitness selection
 
 	int index1 = -1; //index for parentA
 	int index2 = -1; //index for parentB
@@ -225,6 +219,7 @@ void createOffsprings(CCircuit& parentA, CCircuit& parentB, CCircuit& childA, CC
 
 void swapGrids(CCircuit* parents, CCircuit* offsprings, int no_circuits)
 {
+	// Swaps two circuit grids
 	for (int i = 0; i < no_circuits; i++)
 	{
 		parents[i] = offsprings[i];
