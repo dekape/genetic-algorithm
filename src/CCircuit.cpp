@@ -1,6 +1,7 @@
 #include "CCircuit.h"
 #include "Genetic_Algorithm.h"
 #include <algorithm>
+#include <omp.h>
 
 using namespace std;
 
@@ -221,20 +222,6 @@ bool checkValidity(CCircuit circuit)
 }
 
 
-
-
-// CIRCUIT MODELLING TEAM CODE BELOW //
-
-void unitArrayToVector(CUnit *unit_array, vector<CUnit> &unit_vector, int num_units) {
-
-	// One by one insert unit from array into vector
-	for (int i = 0; i < num_units; i++) {
-		unit_vector.push_back(unit_array[i]);
-	}
-
-}
-
-
 double balance_mass(CCircuit circuit_obj, double tol, double value_weight, double waste_weight,
 					double circuit_value_feed, double circuit_waste_feed) {
 	/* Calculate fitness value of circuit.
@@ -259,7 +246,6 @@ double balance_mass(CCircuit circuit_obj, double tol, double value_weight, doubl
 		Total performance of this circuit
 	*/
 
-
 	// Take array from circuit object and create vector
 	int feed_index = circuit_obj.feed_id;
 	int num_units = circuit_obj.no_units;
@@ -283,6 +269,7 @@ double balance_mass(CCircuit circuit_obj, double tol, double value_weight, doubl
 		max_total_change = 0;
 
 		// Calculate flowrate of all components
+		#pragma omp parallel for
 		for (int i = 0; i < num_units; i++) {
 			// Calculate values of concentrate stream
 			circuit_obj.circuit_units[i].conc.value = 0.2 * circuit_obj.circuit_units[i].curr_in_feed.value;
@@ -329,13 +316,14 @@ double balance_mass(CCircuit circuit_obj, double tol, double value_weight, doubl
 		double max_value_change = -1;
 		double max_waste_change = -1;
 
-		for (int i = 0; i < num_units; i++) {
-			// Calculate maximum change in all feed stream values
-			value_change = abs(circuit_obj.circuit_units[i].curr_in_feed.value - circuit_obj.circuit_units[i].old_in_feed.value);
-			max_value_change = max(max_value_change, value_change);
 
-			// Calculate maximum change in all feed stream wastes
+		for (int i = 0; i < num_units; i++) {
+			// Calculate maximum change in all feed stream
+			value_change = abs(circuit_obj.circuit_units[i].curr_in_feed.value - circuit_obj.circuit_units[i].old_in_feed.value);
 			waste_change = abs(circuit_obj.circuit_units[i].curr_in_feed.waste - circuit_obj.circuit_units[i].old_in_feed.waste);
+
+			// Calculate overall changes
+			max_value_change = max(max_value_change, value_change);
 			max_waste_change = max(max_waste_change, waste_change);
 
 		}
@@ -358,6 +346,7 @@ double balance_mass(CCircuit circuit_obj, double tol, double value_weight, doubl
 	}
 	else
 	{
+
 		for (int i = 0; i < num_units; ++i)
 		{
 			if (circuit_obj.circuit_units[i].conc_num == num_units)
