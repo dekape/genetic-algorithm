@@ -161,7 +161,7 @@ int main(int argc, char * argv[])
 
 	// Print out final result
 	cout << "\n FINAL CIRCUIT" << endl;
-	cout << " Iterations " << iter_count << ":" << endl;
+	cout << " Iterations " << iter_count  - best_count<< ":" << endl;
 	cout << " Fitness: " << highest_fit << endl;
 	cout << " Circuit: "; best_circuit.printCircuit();
 	cout << endl;

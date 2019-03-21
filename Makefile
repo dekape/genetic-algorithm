@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall
+CXXFLAGS = -Wall -std=c++0x
 LDFLAGS =
 SOURCE_DIR = src
 INCLUDE_DIR = includes
