@@ -7,7 +7,7 @@ This program employs a Genetic Algorithm to optimise a simple model for a minera
 # Usage
 ## Dependencies
  - OpenMP (OpenMP 5.0 or later)
- - MPI (MS-MPI or MPICH)
+ - MPI (MS-MPI, MPICH or OpenMPI)
  - C++ compiler (g++, intel, Visual Studio (Windows))
 ## Install/Make
 ### Linux
