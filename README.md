@@ -2,7 +2,7 @@
 
 Duncan Hunter, Hitesh Kumar, Jia Ye Mao (Gary), Nitchakul Pipitvej (Irin), Zongpeng Chen (Frank), Deborah Pelacani Cruz
 
-This program employs a Genetic Algorithm to optimise a simple model for a mineral processing circuit. A technical report is provided in the repository, which includes results and an analysis of performance as well as other information.
+This program employs a Genetic Algorithm to optimise a simple model for a mineral processing circuit. Parallelised with both OpenMP and MPI, the model is quick and efficient, with an easy to use command line based interface. A technical report is provided in the repository, which includes results and an analysis of performance as well as other information.
 
 # Usage
 ## Dependencies
