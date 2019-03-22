@@ -1,0 +1,8 @@
+ITERATIONS AVERAGED OVER 10 EXECUTIONS
+Fitness (5 units)         :  24.8163
+Fitness (10 units)        :  165.753
+Max iter                  :  5000
+Iter convergence          :  200
+Standar p_mutation        :  0.01
+Standar p_crossing        :  0.9
+Standar number of circuits:  100
